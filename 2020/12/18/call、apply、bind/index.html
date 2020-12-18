@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>call、apply和bind的实现 | 周龙的博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前端随手记">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="call、apply和bind的实现 | 周龙的博客">
+    <meta name="twitter:description" content="前端随手记">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="call、apply和bind的实现 | 周龙的博客">
+    <meta property="og:description" content="前端随手记">
+
+    
+    <meta name="author" content="stallezhou">
+    
+    
+<link rel="stylesheet" href="/css/vno.css">
+
+    
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+
+    
+    <link rel="icon" href="/images/avatar-small.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+
+    <link rel="canonical" href="http://www.stallezhou.cn/2020/12/18/call%E3%80%81apply%E3%80%81bind/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+    
+<script src="/js/main.js"></script>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 周龙的博客 的主页"><img src="/images/avatar.jpg" width="80" alt="周龙的博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 周龙的博客">周龙的博客</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">前端随手记</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/stallezhou" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2020-12-17T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-18</time
+>
+ &#8226; <span class="post-meta__tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">call、apply和bind的实现</h1>
+  </header>
+
+  <section class="post">
+    <h1 id="call、apply和bind的实现"><a href="#call、apply和bind的实现" class="headerlink" title="call、apply和bind的实现"></a>call、apply和bind的实现</h1><h1 id="call"><a href="#call" class="headerlink" title="call"></a>call</h1><h2 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h2><ul>
+<li>将函数设为对象的属性</li>
+<li>执行&amp;删除这个函数</li>
+<li>指定<code>this</code>到函数并传入给定参数执行函数</li>
+<li>如果不传入参数，默认指向window</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><blockquote>
+<p>我们本着由简至深的思想，先来实现一个比较简陋的版本，然后再进行升级改造</p>
+</blockquote>
+<h3 id="简陋版"><a href="#简陋版" class="headerlink" title="简陋版"></a>简陋版</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = &#123;</span><br><span class="line"> value:<span class="number">1</span>,</span><br><span class="line"> bind:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="built_in">this</span>.value)</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line">foo.bind() <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+<h3 id="升级版"><a href="#升级版" class="headerlink" title="升级版"></a>升级版</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param<span class="type">&#123;*&#125;</span></span>context 传入this需要绑定的对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">Function</span>.prototype._call = <span class="function">(<span class="params">context</span>)=&gt;</span>&#123;</span><br><span class="line"> <span class="comment">// 先对调用者进行判断，是否是函数</span></span><br><span class="line">  <span class="keyword">if</span>( <span class="keyword">typeof</span> <span class="built_in">this</span> != <span class="string">&#x27;function&#x27;</span>)&#123;</span><br><span class="line">     <span class="keyword">throw</span> typeError(<span class="string">&#x27;not a function call&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  context = context || <span class="built_in">window</span></span><br><span class="line">  context.fn = <span class="built_in">this</span></span><br><span class="line">  <span class="comment">// 取出参数</span></span><br><span class="line">  <span class="keyword">const</span> args = [...arguments].slice(<span class="number">1</span>)</span><br><span class="line">  <span class="comment">// 执行函数获取结果</span></span><br><span class="line">  <span class="keyword">const</span> result = context.fn(...args)</span><br><span class="line">  <span class="comment">// 删除添加的属性</span></span><br><span class="line">  <span class="keyword">delete</span> context.fn</span><br><span class="line">  <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="apply"><a href="#apply" class="headerlink" title="apply"></a>apply</h1><p><code>apply()</code>实现思路和<code>call()</code>类似，唯一不同的是传入的参数形式不一样</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param<span class="type">&#123;*&#125;</span></span>context 传入this需要绑定的对象</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="built_in">Function</span>.prototype._apply=<span class="function">(<span class="params">context</span>)=&gt;</span>&#123;</span><br><span class="line"> <span class="comment">//先判断调用者是否为函数</span></span><br><span class="line"> <span class="keyword">if</span>(<span class="keyword">typeof</span> <span class="built_in">this</span> !=<span class="string">&#x27;function&#x27;</span>)&#123;</span><br><span class="line">  <span class="keyword">throw</span> typeError(<span class="string">&#x27;not a function call&#x27;</span>)</span><br><span class="line"> &#125;</span><br><span class="line"> context = context || <span class="built_in">window</span></span><br><span class="line"> context.fn = <span class="built_in">this</span></span><br><span class="line"> <span class="comment">// 取出参数</span></span><br><span class="line"> <span class="keyword">const</span> args = <span class="built_in">arguments</span>[<span class="number">1</span>]</span><br><span class="line"> <span class="comment">//对参数判断并进行相应处理</span></span><br><span class="line"> <span class="keyword">const</span> result = args?context.fn(...args):context.fn()</span><br><span class="line"> <span class="keyword">delete</span> context.fn</span><br><span class="line"> <span class="keyword">return</span> result </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h1><blockquote>
+<p><code>bind()</code>会创建一个新函数，当这个新函数被调用时，<code>bind()</code>会将它的<strong>第一个参数</strong> 作为它运行时的this，之后的序列参数将会在传递的实参前传入作为它的参数<br>此外，<code>bind()</code>实现需要考虑实例化后对原型链的影响</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param<span class="type">&#123;*&#125;</span> </span>context 传入this需要绑定的对象</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="built_in">Function</span>.prototype._bind = <span class="function">(<span class="params">context</span>)=&gt;</span>&#123;</span><br><span class="line"> <span class="comment">// 先判断调用者是否为函数</span></span><br><span class="line"> <span class="keyword">if</span>(<span class="keyword">typeof</span> <span class="built_in">this</span> !=<span class="string">&#x27;function&#x27;</span>)&#123;</span><br><span class="line">  <span class="keyword">throw</span> typeError(<span class="string">&#x27;not a function bind&#x27;</span>)</span><br><span class="line"> &#125; </span><br><span class="line"> context = context || <span class="built_in">window</span></span><br><span class="line"> <span class="keyword">const</span> args = [...arguments].slice(<span class="number">1</span>)</span><br><span class="line"> <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">F</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="comment">// 对于使用 new 的情况，不会被任何方式改变this，所以这种情况需要忽略传入的this</span></span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">this</span> <span class="keyword">instanceof</span> F )&#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">new</span> context(...args,...arguments)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 返回函数后可能会出现f.bind(obj,1)(2),所以需要将两边的参数拼接起来</span></span><br><span class="line">  <span class="keyword">return</span> context.apply(context,args.concat(...arguments))</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/17/this/" title="JavaScript深入之this绑定全面解析">JavaScript深入之this绑定全面解析</a></h2>
+                <p class="excerpt">
+                
+                前言在两年的前端生涯中，我发现this指向是前端人广为讨论的一个对象，因此this也成为了一个面试热门话题。今天，我们通过本篇文章来全面地看看this的绑定问题。
+this的5种绑定规则
+默认绑定(严格/非严格模式)
+隐式绑定
+显式绑定
+new绑定
+箭头函数绑定
+
+this的调用位置调用位置就是函数
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2020-12-16T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-17</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2020/12/17/this/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>
