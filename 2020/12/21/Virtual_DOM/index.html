@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>Virtual DOM详解 | 周龙的博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前端随手记">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Virtual DOM详解 | 周龙的博客">
+    <meta name="twitter:description" content="前端随手记">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Virtual DOM详解 | 周龙的博客">
+    <meta property="og:description" content="前端随手记">
+
+    
+    <meta name="author" content="stallezhou">
+    
+    
+<link rel="stylesheet" href="/css/vno.css">
+
+    
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+
+    
+    <link rel="icon" href="/images/avatar-small.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+
+    <link rel="canonical" href="http://www.stallezhou.cn/2020/12/21/Virtual_DOM/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+    
+<script src="/js/main.js"></script>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 周龙的博客 的主页"><img src="/images/avatar.jpg" width="80" alt="周龙的博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 周龙的博客">周龙的博客</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">前端随手记</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/stallezhou" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2020-12-20T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-21</time
+>
+ &#8226; <span class="post-meta__tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">Virtual DOM详解</h1>
+  </header>
+
+  <section class="post">
+    <h1 id="Virtual-DOM"><a href="#Virtual-DOM" class="headerlink" title="Virtual DOM"></a>Virtual DOM</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信大家都知道，目前流行的两大前端框架，React和Vue，都不约而同的借助Virtual DOM来提高页面的渲染效率，那么么，什么是Virtual DOM呢？它又是怎样来帮助我们提高页面的渲染效率呢，接下来，我们将在本篇文章中探索这两个问题？</p>
+<h2 id="什么是Virtual-DOM"><a href="#什么是Virtual-DOM" class="headerlink" title="什么是Virtual DOM"></a>什么是Virtual DOM</h2><p>不记得什么时候，在哪片文章中，听到关于Virtual DOM的解释，让我印象深刻。他是这样解释的:「从本质上来说，Virtual DOM是一个JavaScript对象，通过对象的方式来表示DOM结构，将表面的状态抽象成为JS对象的形式，配合不同的渲染工具，使跨平台渲染成为可能。通过事务处理机制，将多次DOM修改的结果一次性的更新到页面上，从而有效减少页面渲染的次数，减少修改DOM的重绘重排次数，来提高渲染性能。」</p>
+<h2 id="Virtual-DOM原理"><a href="#Virtual-DOM原理" class="headerlink" title="Virtual DOM原理"></a>Virtual DOM原理</h2><h3 id="利用JavaScript创建DOM树"><a href="#利用JavaScript创建DOM树" class="headerlink" title="利用JavaScript创建DOM树"></a>利用JavaScript创建DOM树</h3><p>我们借助一个例子，来看如何通过jsx编译器，来讲文件中的HTMl转化成函数的形式,然后生成Virtual DOM。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"> <span class="keyword">return</span> (</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">   Hello world!</span><br><span class="line">   &lt;ul&gt;</span><br><span class="line">     &lt;li id=<span class="string">&#x27;1&#x27;</span> <span class="class"><span class="keyword">class</span></span>=<span class="string">&#x27;li-1&#x27;</span>&gt;第一项&lt;/li&gt;</span><br><span class="line">   &lt;/ul&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line"> )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>经过编译后，绘输出下面的内容</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"> <span class="keyword">return</span> h(</span><br><span class="line">  <span class="string">&#x27;div&#x27;</span>,</span><br><span class="line">  <span class="literal">null</span>,</span><br><span class="line">  <span class="string">&#x27;hello world!&#x27;</span>,</span><br><span class="line">  h(</span><br><span class="line">   <span class="string">&#x27;ul&#x27;</span>,</span><br><span class="line">   <span class="literal">null</span>,</span><br><span class="line">   h(</span><br><span class="line">    <span class="string">&#x27;li&#x27;</span>,</span><br><span class="line">    &#123;<span class="attr">id</span>:<span class="string">&#x27;1&#x27;</span>,<span class="attr">class</span>:<span class="string">&#x27;li-1&#x27;</span>&#125;,</span><br><span class="line">    <span class="string">&#x27;\u7b2c\u4e00\u9879&#x27;</span></span><br><span class="line">   )</span><br><span class="line">  )</span><br><span class="line"> )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>相信大家已经看懂的差不多来，这里的h是一个创造节点的函数，我们可以起任意的名字，但需要到babel配置，具体的配置如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// .babelrc 文件</span></span><br><span class="line">&#123; </span><br><span class="line"> <span class="string">&quot;plugins&quot;</span>:[</span><br><span class="line">  [<span class="string">&quot;transform-react-jsx&quot;</span>],&#123;</span><br><span class="line">   <span class="string">&quot;pragma&quot;</span>:<span class="string">&quot;h&quot;</span>  <span class="comment">//这里可以配置任意的名称</span></span><br><span class="line">  &#125;</span><br><span class="line"> ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来，我们需要定义h函数，就能创建DOM树了</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flatten</span>(<span class="params">arr</span>)</span>&#123;</span><br><span class="line"> <span class="keyword">return</span> [].concat.apply([],arr)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">h</span>(<span class="params">tag,props,...children</span>)</span>&#123;</span><br><span class="line"> <span class="comment">// 这段判断在以前需要,随着jsx语法的发展,我们现在可以写成&lt;&gt;&lt;/&gt;的方式，这会被认为是一个fragment，因此没有判断也行</span></span><br><span class="line"> <span class="keyword">if</span>(!tag)&#123;</span><br><span class="line">  <span class="keyword">throw</span> typeError(<span class="string">&#x27;tag not a node&#x27;</span>)</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">return</span> &#123;</span><br><span class="line">  tag,</span><br><span class="line">  props:props || &#123;&#125;,</span><br><span class="line">  children:flatten(children) || []</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>h函数会传入三个或者以上的标签名，第一个是标签名，第二个是属性对象，从第三个开始的其它参数都是children。children可能是数组，所以需要将其结构一层，比如上面例子中的ul中不止一个元素时。通过h函数，我们会得到最终的Virtual DOM对象，结构如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> tag:<span class="string">&quot;div&quot;</span>,</span><br><span class="line"> props:&#123;&#125;,</span><br><span class="line"> children:[</span><br><span class="line">  <span class="string">&quot;hello world!&quot;</span>,</span><br><span class="line">  &#123;</span><br><span class="line">   tag:<span class="string">&quot;ul&quot;</span>,</span><br><span class="line">   props:&#123;&#125;,</span><br><span class="line">   children:[</span><br><span class="line">    &#123;</span><br><span class="line">     tag:<span class="string">&quot;ul&quot;</span>,</span><br><span class="line">     props:&#123;&#125;,</span><br><span class="line">     children:[</span><br><span class="line">      &#123;</span><br><span class="line">       tag:<span class="string">&quot;li&quot;</span>,</span><br><span class="line">       props:&#123;</span><br><span class="line">        id:<span class="number">1</span>,</span><br><span class="line">        class:&quot;li-1&quot;</span><br><span class="line">       &#125;,</span><br><span class="line">       children:[<span class="string">&quot;第一项&quot;</span>]</span><br><span class="line">      &#125;</span><br><span class="line">     ]</span><br><span class="line">    &#125;</span><br><span class="line">   ]</span><br><span class="line">  &#125;</span><br><span class="line"> ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，我们从html到Virtual DOM的真实编译过程已经结束了。不知道大家有没有明白呢？</p>
+<h3 id="DOM树的diff"><a href="#DOM树的diff" class="headerlink" title="DOM树的diff"></a>DOM树的diff</h3><p>在我们更新页面或者更新数据时，DOM树会进行diff算法比对哪些节点或者数据已经被改变。具体比对是逐步同层对比，输出patches(listDiff，diffChildren，diffProps)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// diff算法的实现</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">diff</span>(<span class="params">oldTree,newTree</span>)</span>&#123;</span><br><span class="line"> <span class="keyword">const</span> patches =&#123;&#125;</span><br><span class="line"> dfs(oldTree,newTree,<span class="number">0</span>,patches)</span><br><span class="line"> <span class="keyword">return</span> patches</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dfs</span>(<span class="params">oldNode,newNode,index,patches</span>)</span>&#123;</span><br><span class="line"> <span class="keyword">let</span> curPatches = []</span><br><span class="line"> <span class="keyword">if</span>(newNode)&#123;</span><br><span class="line">  <span class="comment">// 当新的节点与旧的节点属性名称完全一致时</span></span><br><span class="line">  <span class="keyword">if</span>(oldNode.tagName === newNode.tagName &amp;&amp; oldNode.key === newNode.key)&#123;</span><br><span class="line">   <span class="comment">// 继续对比属性差异</span></span><br><span class="line">   <span class="keyword">const</span> props=diffProps(oldNode.props,newNode.props)</span><br><span class="line">   curPatches.push(&#123;<span class="attr">type</span>:<span class="string">&quot;changeProps&quot;</span>,props&#125;) </span><br><span class="line">   <span class="comment">//递归进入下一层级遍历比较</span></span><br><span class="line">   diffChildren(oldNode.children,newNode.children)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    curPatches.push(&#123;<span class="attr">type</span>:<span class="string">&quot;replaceNode&quot;</span>,<span class="attr">node</span>:newNode&#125;) </span><br><span class="line">  &#125; </span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">// 存在差异，构建整个差异树</span></span><br><span class="line"> <span class="keyword">if</span>(curPatches.length)&#123;</span><br><span class="line">  <span class="keyword">if</span>(patches[index])&#123;</span><br><span class="line">   patches[index] = patches[index].concat(curPatches)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">   patches[index] = curPatches</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//属性对比</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">diffProps</span>(<span class="params">oldProps,newProps</span>)</span>&#123;</span><br><span class="line"> <span class="keyword">const</span> propPatches =[]</span><br><span class="line"> <span class="comment">// 1、遍历新旧属性列表 2、查找删除项 3、查找修改项 4、查找新增项</span></span><br><span class="line"> <span class="keyword">for</span>(<span class="keyword">const</span> key <span class="keyword">in</span> oldProps)&#123;</span><br><span class="line">  <span class="comment">// 如果新属性没有，就删除</span></span><br><span class="line">  <span class="keyword">if</span>(!newProps.hasOwnProperty(key))&#123;</span><br><span class="line">   propsPatches.push(&#123;<span class="attr">type</span>:<span class="string">&quot;remove&quot;</span>,<span class="attr">prop</span>:oldProps[key]&#125;)</span><br><span class="line">  <span class="comment">//新旧属性不一致，则加入修改项</span></span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span>(oldProps[key]!==newProps[key])&#123;</span><br><span class="line">   propsPatches.push(&#123;<span class="attr">type</span>:<span class="string">&quot;change&quot;</span>,<span class="attr">prop</span>:oldProps[key],<span class="attr">value</span>:newProps[key]&#125;)</span><br><span class="line">   &#125;</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">// 查找新增项</span></span><br><span class="line"> <span class="keyword">for</span>(<span class="keyword">const</span> key <span class="keyword">in</span> newProps)&#123;</span><br><span class="line">  <span class="keyword">if</span>(!oldProps.hasOwnProperty(key))&#123;</span><br><span class="line">   propsPatches.push(&#123;<span class="attr">type</span>:<span class="string">&quot;add&quot;</span>,<span class="attr">prop</span>:newProps[key]&#125;)</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">return</span> propsPatches</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子级对比</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">diffChildren</span>(<span class="params">oldChild,newChild,index,patches</span>)</span>&#123;</span><br><span class="line"> <span class="comment">// 标记子级的删除，新增，移动</span></span><br><span class="line"> <span class="keyword">let</span> &#123;change,list&#125; = diffList(oldChild,newChild,index,patches)</span><br><span class="line"> <span class="keyword">if</span>(change.length)&#123;</span><br><span class="line">  <span class="keyword">if</span>(patches[index])&#123;</span><br><span class="line">   patches[index] = patches[index].concat(change)</span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">   patches[index] = change</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">// 根据key获取原来匹配的节点，进一步递归从头开始</span></span><br><span class="line"> oldChild.map(<span class="function">(<span class="params">item,index</span>)=&gt;</span>&#123;</span><br><span class="line">  <span class="keyword">let</span> keyIndex = list.indexOf(item.key)</span><br><span class="line">  <span class="keyword">if</span>(keyIndex)&#123;</span><br><span class="line">   <span class="keyword">let</span> node = newChild[keyIndex]</span><br><span class="line">   <span class="comment">// 进一步递归对比</span></span><br><span class="line">   dfs(item,node,index,patches)</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 1、对比列表，根据key查找匹配项</span></span><br><span class="line"><span class="comment">* 2、对比新旧列表的新增，移动，删除</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param <span class="type">&#123;*&#125;</span> <span class="variable">oldList</span></span></span></span><br><span class="line"><span class="comment">* <span class="doctag">@param <span class="type">&#123;*&#125;</span> <span class="variable">newList</span></span></span></span><br><span class="line"><span class="comment">* <span class="doctag">@param <span class="type">&#123;*&#125;</span> <span class="variable">index</span></span></span></span><br><span class="line"><span class="comment">* <span class="doctag">@param <span class="type">&#123;*&#125;</span> <span class="variable">patches</span></span></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">diffList</span>(<span class="params">oldList,newList,index,patches</span>)</span>&#123;</span><br><span class="line"> <span class="keyword">let</span> change = []</span><br><span class="line"> <span class="keyword">let</span> list = []</span><br><span class="line"> <span class="keyword">const</span> newKeys=newList.map(<span class="function"><span class="params">item</span>=&gt;</span>item.key)</span><br><span class="line"> oldList.map(<span class="function"><span class="params">item</span>=&gt;</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(newKeys.includes(item.key))&#123;</span><br><span class="line">   list.push(item.key)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">   list.push(<span class="literal">null</span>)</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;)</span><br><span class="line"> <span class="comment">//标记删除</span></span><br><span class="line"> <span class="keyword">for</span>(<span class="keyword">let</span> i = list.length-<span class="number">1</span>;i&gt;=<span class="number">0</span>;i--)&#123;</span><br><span class="line">  <span class="keyword">if</span>(!list[i])&#123;</span><br><span class="line">   list.splice(i,<span class="number">1</span>)</span><br><span class="line">   change.push(&#123;<span class="attr">type</span>:<span class="string">&quot;remove&quot;</span>,<span class="attr">index</span>:i&#125;)</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">// 标记新增和移动</span></span><br><span class="line"> newList.map(<span class="function"><span class="params">item</span>=&gt;</span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;key&#125; = item</span><br><span class="line">  <span class="keyword">const</span> index  = list.indexOf(key)</span><br><span class="line">  <span class="keyword">if</span>(index===-<span class="number">1</span> || key ===<span class="literal">null</span>)&#123;</span><br><span class="line">   <span class="comment">// 新增</span></span><br><span class="line">   change.push(&#123;<span class="attr">type</span>:<span class="string">&quot;add&quot;</span>,<span class="attr">node</span>:item,<span class="attr">index</span>:i&#125;)</span><br><span class="line">   list.splice(i,<span class="number">0</span>,key)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span>(index != i )&#123;</span><br><span class="line">   <span class="comment">// 移动</span></span><br><span class="line">   change.push(&#123;<span class="attr">type</span>:<span class="string">&quot;move&quot;</span>,<span class="attr">from</span>:index,<span class="attr">to</span>:i&#125;)</span><br><span class="line">   move(list,index,i)</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;)</span><br><span class="line"> <span class="keyword">return</span> &#123;change,list&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，我们的diff算法也已经大概实现的差不多，当然，这只是一个简单版本的diff算法，在具体的应用中，还有很多需要优化的地方，比如列表比对。我们来总结一下diff算法的几个步骤:</p>
+<ul>
+<li>是否存在新的节点</li>
+<li>新的节点是否与旧节点的tagName和key是否一致</li>
+<li>对比新旧节点的props，继续递归遍历子树</li>
+<li>对比属性(新旧属性列表)<h3 id="更新渲染"><a href="#更新渲染" class="headerlink" title="更新渲染"></a>更新渲染</h3></li>
+<li>通过diff算法得到所有更改的节点</li>
+<li>加入更新队列，更新DOM</li>
+</ul>
+<h2 id="后序"><a href="#后序" class="headerlink" title="后序"></a>后序</h2><p>Virtual DOM给我们带来的不仅仅是提升了浏览器的渲染性能，更重要的是一种思想。</p>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/18/call、apply、bind/" title="call、apply和bind的实现">call、apply和bind的实现</a></h2>
+                <p class="excerpt">
+                
+                call、apply和bind的实现call核心思想
+将函数设为对象的属性
+执行&amp;amp;删除这个函数
+指定this到函数并传入给定参数执行函数
+如果不传入参数，默认指向window
+
+实现
+我们本着由简至深的思想，先来实现一个比较简陋的版本，然后再进行升级改造
+
+简陋版1234567const f
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2020-12-17T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-18</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2020/12/18/call、apply、bind/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>
