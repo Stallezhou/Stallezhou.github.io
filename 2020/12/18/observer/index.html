@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>观察者模式详解 | 周龙的博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前端随手记">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="观察者模式详解 | 周龙的博客">
+    <meta name="twitter:description" content="前端随手记">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="观察者模式详解 | 周龙的博客">
+    <meta property="og:description" content="前端随手记">
+
+    
+    <meta name="author" content="stallezhou">
+    
+    
+<link rel="stylesheet" href="/css/vno.css">
+
+    
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+
+    
+    <link rel="icon" href="/images/avatar-small.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+
+    <link rel="canonical" href="http://www.stallezhou.cn/2020/12/18/observer/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+    
+<script src="/js/main.js"></script>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 周龙的博客 的主页"><img src="/images/avatar.jpg" width="80" alt="周龙的博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 周龙的博客">周龙的博客</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">前端随手记</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/stallezhou" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2020-12-17T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-18</time
+>
+ &#8226; <span class="post-meta__tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">观察者模式详解</h1>
+  </header>
+
+  <section class="post">
+    <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在我们现实世界中，有很多东西都不是独立存在的。其中一件事情的发生可能会导致另一个或者多个其他的对象行为发生改变。例如:超市里某种商品打折会导致消费者购买开心，也能给超市老板带来更大的销售额；还有，当我们在过马路时，遇到红灯会停，绿灯行;这样的例子数不胜数。</p>
+<h1 id="什么是观察者模式"><a href="#什么是观察者模式" class="headerlink" title="什么是观察者模式"></a>什么是观察者模式</h1><p>对于观察者模式的定义，我目前听到或者看到我觉得最正统的说法是当多个对象存在一对多的依赖关系，一个对象的状态发生改变时，所有依赖于它的对象都会得到通知并被自动更新。它是典型的对象行为模式。其主要优点有:</p>
+<ul>
+<li>降低了目标与观察者之间的耦合关系，两者之间是抽象的耦合关系。符合依赖倒置原则</li>
+<li>目标与观察者之间建立了一套通用的触发机制<br>但是它也有缺点，缺点就是:</li>
+<li>目标与观察者之间的依赖关系并没有完全解除，而且有可能出现循环引用。</li>
+<li>当观察者对象很多时，通知的时间会很长，影响程序的效率</li>
+</ul>
+<h1 id="模式的结构"><a href="#模式的结构" class="headerlink" title="模式的结构"></a>模式的结构</h1><p>实现观察者模式时要注意具体目标对象和具体观察者对象之间能不能直接调用，否则将使两者之间紧密耦合起来，这违反了面向对象的设计原则。<br>观察者模式中主要的几个角色是:</p>
+<ol>
+<li>(Subject):也叫抽象目标类，它提供了一个用于保存观察者对象的聚集类以及增加、删除和通知观察者对象的方法。</li>
+<li>具体主题(Concrete Subject):也叫具体目标类，它实现抽象目标中的通知方法，当具体主题的内部状态发生改变时，通知所有注册过的观察者对象</li>
+<li>抽象观察者(Observer):它是一个抽象类或接口，它包含了一个更新自己的抽象方法，当接到具体主题通知时被调用</li>
+<li>具体观察者(Concrete Observer)实现抽象观察者中定义的抽象方法，以便在得到目标的更改通知时更新自身的状态</li>
+</ol>
+<p><img src="http://img.stallezhou.cn/blog/observer.svg"></p>
+<p>上图就是观察者模式的结构图</p>
+<h1 id="模式的实现"><a href="#模式的实现" class="headerlink" title="模式的实现"></a>模式的实现</h1><p>观察者模式的主要实现代码如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> observer_ids = <span class="number">0</span></span><br><span class="line"><span class="keyword">let</span> observed_ids = <span class="number">0</span></span><br><span class="line"><span class="comment">// 观察者类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Observer</span></span>&#123;</span><br><span class="line"> <span class="function"><span class="title">constructor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.id = observer_ids++</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="function"><span class="title">response</span>(<span class="params">ob</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`观察者<span class="subst">$&#123;<span class="built_in">this</span>.id&#125;</span>-检测到被观察者<span class="subst">$&#123;ob.id&#125;</span>变化`</span>)</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//被观察者类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Observed</span></span>&#123;</span><br><span class="line"> <span class="function"><span class="title">constructor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">   <span class="built_in">this</span>.observers =[]</span><br><span class="line">   <span class="built_in">this</span>.id = observed_ids++;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">// 添加观察者</span></span><br><span class="line"> <span class="function"><span class="title">add</span>(<span class="params">ob</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.observers.push(ob)</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">//删除观察者</span></span><br><span class="line"> <span class="function"><span class="title">remove</span>(<span class="params">ob</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.observers = <span class="built_in">this</span>.observers.filter(<span class="function"><span class="params">item</span>=&gt;</span>item.id!==ob.id)</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">// 通知所有观察者</span></span><br><span class="line"> <span class="function"><span class="title">notify</span>(<span class="params">ob</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.observers.map(<span class="function"><span class="params">observer</span>=&gt;</span>&#123;</span><br><span class="line">   observer.response(ob)</span><br><span class="line">  &#125;)</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来我们通过几个例子来测试一下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> mObserved=<span class="keyword">new</span> Observed();</span><br><span class="line"><span class="keyword">let</span> mObserver1=<span class="keyword">new</span> Observer();</span><br><span class="line"><span class="keyword">let</span> mObserver2=<span class="keyword">new</span> Observer();</span><br><span class="line"></span><br><span class="line">mObserved.addObserver(mObserver1);</span><br><span class="line">mObserved.addObserver(mObserver2);</span><br><span class="line"></span><br><span class="line">mObserved.notify();</span><br></pre></td></tr></table></figure>
+<p>输出结果为:</p>
+<blockquote>
+<p>观察者0-检测到被观察者0变化</p>
+<p>观察者0-检测到被观察者0变化<br>接下来，我们测试移除观察者功能,我们继续增加一个观察者，并移除一个观察者</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> mObserver3=<span class="keyword">new</span> Observer();</span><br><span class="line">mObserved.addObserver(mObserver3);</span><br><span class="line">mObserved.removeObserver(mObserver2);</span><br><span class="line"></span><br><span class="line">mObserved.notify();</span><br></pre></td></tr></table></figure>
+<p>此次，输出结果为:</p>
+<blockquote>
+<p>观察者0-检测到被观察者0变化</p>
+<p>观察者2-检测到被观察者0变化</p>
+</blockquote>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Newer Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/18/为什么学习TypeScript/" title="为什么要学TypeScript">为什么要学TypeScript</a></h2>
+                <p class="excerpt">
+                
+                为什么要学TypeScript前言从过去互联网的发展上来看，JavaScript已经在浏览器上编写网页和应用程序的脚本有着举足轻重轻重的作用。但是能否通过JavaScript去构建或者架构一些大型的复杂的web应用呢？答案是可以但没肯定那么容易，于是，我们迎来了另外一个解决方案，TypeScript
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2020-12-17T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-18</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2020/12/18/为什么学习TypeScript/">继续阅读</a></div>
+                           
+            </div>
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/17/this/" title="JavaScript深入之this绑定全面解析">JavaScript深入之this绑定全面解析</a></h2>
+                <p class="excerpt">
+                
+                前言在两年的前端生涯中，我发现this指向是前端人广为讨论的一个对象，因此this也成为了一个面试热门话题。今天，我们通过本篇文章来全面地看看this的绑定问题。
+this的5种绑定规则
+默认绑定(严格/非严格模式)
+隐式绑定
+显式绑定
+new绑定
+箭头函数绑定
+
+this的调用位置调用位置就是函数
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2020-12-16T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-17</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2020/12/17/this/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>

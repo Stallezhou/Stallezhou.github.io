@@ -1,5 +1,6 @@
 http://www.stallezhou.cn/2020/12/21/Virtual_DOM/
 http://www.stallezhou.cn/2020/12/18/call%E3%80%81apply%E3%80%81bind/
 http://www.stallezhou.cn/2020/12/18/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AD%A6%E4%B9%A0TypeScript/
+http://www.stallezhou.cn/2020/12/18/observer/
 http://www.stallezhou.cn/2020/12/17/this/
 http://www.stallezhou.cn/2020/12/16/start/
