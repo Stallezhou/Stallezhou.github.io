@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>发布订阅者模式 | 周龙的博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前端随手记">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="发布订阅者模式 | 周龙的博客">
+    <meta name="twitter:description" content="前端随手记">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="发布订阅者模式 | 周龙的博客">
+    <meta property="og:description" content="前端随手记">
+
+    
+    <meta name="author" content="stallezhou">
+    
+    
+<link rel="stylesheet" href="/css/vno.css">
+
+    
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+
+    
+    <link rel="icon" href="/images/avatar-small.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+
+    <link rel="canonical" href="http://www.stallezhou.cn/2020/12/23/pub_sub/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+    
+<script src="/js/main.js"></script>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 周龙的博客 的主页"><img src="/images/avatar.jpg" width="80" alt="周龙的博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 周龙的博客">周龙的博客</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">前端随手记</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/stallezhou" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2020-12-22T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-23</time
+>
+ &#8226; <span class="post-meta__tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">发布订阅者模式</h1>
+  </header>
+
+  <section class="post">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在昨天，我们了解了什么是观察者模式，并且知道了它实现的原理。今天，我们来看一个和它类似但又不完全相同的设计模式，发布订阅者模式。</p>
+<h2 id="什么是发布订阅模式"><a href="#什么是发布订阅模式" class="headerlink" title="什么是发布订阅模式"></a>什么是发布订阅模式</h2><p>总体上来说，发布订阅模式与观察者模式是相似的，但发布订阅比观察者多了一个中间层的调度中心，用来对发布者发布的信息进行处理再发布到订阅者。通俗来讲，就是你想要买房子，你需要了解各个楼盘的价格，但是你自己工作繁忙，因此你找了一个中介，中介帮你关注各个楼盘的价格信息，然后汇总发给你。具体的过程如下图所示:</p>
+<p><img src="http://img.stallezhou.cn/blog/pub_sub.svg"></p>
+<p>那么问题来了，我们加这个中间层的调度中心是为什么呢？通过昨天的观察者模式的实现，我们发现，observed类中是有observer对象的。因此并没有实现两个类的完全解耦，因此我们需要添加中间层的调度中心类，这样，我们可以完全将发布者和订阅者解耦。两者不再有直接的关连，而是通过调度中心关连起来。</p>
+<h2 id="发布订阅模式的实现"><a href="#发布订阅模式的实现" class="headerlink" title="发布订阅模式的实现"></a>发布订阅模式的实现</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> observed_ids = <span class="number">0</span></span><br><span class="line"><span class="keyword">let</span> observer_ids = <span class="number">0</span></span><br><span class="line"><span class="comment">// 发布者</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pub</span></span>&#123;</span><br><span class="line"> <span class="function"><span class="title">constructor</span>(<span class="params">dispatcher</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.dispatcher = dispatcher</span><br><span class="line">  <span class="built_in">this</span>.id = observed_ids++</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>:发布方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>type 通知类型 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> <span class="function"><span class="title">publish</span>(<span class="params">type</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.dispatcher.publish(type,<span class="built_in">this</span>)</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//订阅者</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Subscriber</span></span>&#123;</span><br><span class="line"> <span class="function"><span class="title">constructor</span>(<span class="params">dispatcher</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.dispatcher= dispatcher</span><br><span class="line">  <span class="built_in">this</span>.id = observer_ids++</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@description</span>:订阅消息</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>type 订阅类型</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="function"><span class="title">subscribe</span>(<span class="params">type</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.dispatcher.subscribe[type,<span class="built_in">this</span>]</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@description</span>:接收到通知的响应</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>type 通知类型</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>arg 通知内容</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="function"><span class="title">response</span>(<span class="params">type,arg</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`接收到通知类型为<span class="subst">$&#123;type&#125;</span>,内容为:<span class="subst">$&#123;arg&#125;</span>`</span>)</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 调度中心</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dispatcher</span></span>&#123;</span><br><span class="line"> <span class="function"><span class="title">constructor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.dispatcher = &#123;&#125;</span><br><span class="line"> &#125;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@description</span>:订阅</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>type 订阅类型</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>subscriber 订阅人</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line"> <span class="function"><span class="title">subscribe</span>(<span class="params">type,subscriber</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(!<span class="built_in">this</span>.dispatcher[type])&#123;</span><br><span class="line">   <span class="built_in">this</span>.dispatcher[type] = []</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">this</span>.dispatcher[type].push(subscriber)</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@description</span>:退订</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>type  退订类型</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>subscriber 退订人</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="function"><span class="title">unsubscribe</span>(<span class="params">type,subscriber</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">let</span> subscribers = <span class="built_in">this</span>.dispatcher[type]</span><br><span class="line">  <span class="keyword">if</span>(!subscribers || !subscribers.length)<span class="keyword">return</span></span><br><span class="line">  <span class="built_in">this</span>.dispatcher[type] = subscribers.filter(<span class="function"><span class="params">sub</span>=&gt;</span>sub.id!==subscriber.id)</span><br><span class="line"> &#125; </span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@description</span>:发布通知</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>type 通知类型</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param <span class="type">&#123;*&#125;</span> </span>args 通知内容</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="function"><span class="title">publish</span>(<span class="params">type,args</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">let</span> subscribers = <span class="built_in">this</span>.dispatcher[type]</span><br><span class="line">  <span class="keyword">if</span>(!subscribers || !subscribers.length)<span class="keyword">return</span></span><br><span class="line">  subscribers.map(<span class="function"><span class="params">subscriber</span>=&gt;</span>&#123;</span><br><span class="line">   subscriber.response(type,args)</span><br><span class="line">  &#125;)</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>我们还是通过买房的例子来说明这个问题,首先新建两个类，用户类和楼盘类，分别继承订阅者，发布者</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> <span class="title">Subscriber</span></span>&#123;</span><br><span class="line"> <span class="function"><span class="title">constructor</span>(<span class="params">name,dispatcher</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">super</span>(dispatcher)</span><br><span class="line">  <span class="built_in">this</span>.name = name </span><br><span class="line"> &#125;</span><br><span class="line"> <span class="function"><span class="title">response</span>(<span class="params">type,arg</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;<span class="built_in">this</span>.name&#125;</span>收到了<span class="subst">$&#123;type&#125;</span>楼盘的信息`</span>)</span><br><span class="line"> &#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Houses</span> <span class="keyword">extends</span> <span class="title">Pub</span></span>&#123;</span><br><span class="line"> <span class="function"><span class="title">constructor</span>(<span class="params">name,dispatcher</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">super</span>(dispatcher)</span><br><span class="line">  <span class="built_in">this</span>.name = name</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="function"><span class="title">publishPrice</span>(<span class="params">type</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.publish(type)</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来，我们新增几个用户和楼盘，并让用户订阅楼盘</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新增一个调度中心</span></span><br><span class="line"><span class="keyword">const</span> dispatcher = <span class="keyword">new</span> Dispatcher()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 新增3个用户</span></span><br><span class="line"><span class="keyword">const</span> user1 = <span class="keyword">new</span> User(<span class="string">&#x27;张三&#x27;</span>,dispatcher)</span><br><span class="line"><span class="keyword">const</span> user2 = <span class="keyword">new</span> User(<span class="string">&#x27;李四&#x27;</span>,dispatcher)</span><br><span class="line"><span class="keyword">const</span> user3 = <span class="keyword">new</span> User(<span class="string">&#x27;王麻子&#x27;</span>,dispatcher)</span><br><span class="line"></span><br><span class="line"><span class="comment">//新增2个楼盘</span></span><br><span class="line"><span class="keyword">const</span> house1= <span class="keyword">new</span> Houses(<span class="string">&#x27;楼盘1&#x27;</span>,dispatcher)  </span><br><span class="line"><span class="keyword">const</span> house2= <span class="keyword">new</span> Houses(<span class="string">&#x27;楼盘2&#x27;</span>,dispatcher)  </span><br><span class="line"></span><br><span class="line"><span class="comment">// 用户订阅楼盘</span></span><br><span class="line">user1.subscribe(<span class="string">&#x27;楼盘1&#x27;</span>)</span><br><span class="line">user2.subscribe(<span class="string">&#x27;楼盘2&#x27;</span>)</span><br><span class="line">user3.subscribe(<span class="string">&#x27;楼盘2&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 楼盘发布价格信息</span></span><br><span class="line"></span><br><span class="line">house1.publishPrice(<span class="string">&#x27;楼盘1&#x27;</span>,<span class="string">&#x27;价格提升到200/平&#x27;</span>)</span><br><span class="line">house2.publishPrice(<span class="string">&#x27;楼盘2&#x27;</span>,<span class="string">&#x27;价格提升到220/平&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>我们可以看到输出是</p>
+<blockquote>
+<p>张三收到了楼盘1的信息,内容为价格提升到200/平</p>
+<p>李四收到了楼盘2的信息,内容为价格提升到220/平</p>
+<p>王麻子收到了楼盘2的信息,内容为价格提升到220/平<br>至此，我们手写实现发布订阅者的源码就到此结束了。</p>
+</blockquote>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>以上是我自己阅读设计模式以及参考网上的一部分解释后，说出自己对观察者模式的理解。如有不当之处还望指正。</p>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/22/observer/" title="观察者模式详解">观察者模式详解</a></h2>
+                <p class="excerpt">
+                
+                前言在我们现实世界中，有很多东西都不是独立存在的。其中一件事情的发生可能会导致另一个或者多个其他的对象行为发生改变。例如:超市里某种商品打折会导致消费者购买开心，也能给超市老板带来更大的销售额；还有，当我们在过马路时，遇到红灯会停，绿灯行;这样的例子数不胜数。
+什么是观察者模式对于观察者模式的定义，
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2020-12-21T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-22</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2020/12/22/observer/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>

@@ -1,3 +1,4 @@
+http://www.stallezhou.cn/2020/12/23/pub_sub/
 http://www.stallezhou.cn/2020/12/22/observer/
 http://www.stallezhou.cn/2020/12/21/Virtual_DOM/
 http://www.stallezhou.cn/2020/12/18/call%E3%80%81apply%E3%80%81bind/
