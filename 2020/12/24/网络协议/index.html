@@ -155,8 +155,9 @@
 <h2 id="两种网络模型对比"><a href="#两种网络模型对比" class="headerlink" title="两种网络模型对比"></a>两种网络模型对比</h2><p><img src="http://img.stallezhou.cn/blog/net_model.png"></p>
 <p>接下来，我们主要来看目前我们普遍使用的TCP/IP协议</p>
 <h2 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h2><blockquote>
-<p>传输控制协议（TCP，Transmission Control Protocol）是一种面向连接、可靠的、基于字节流的传输层通信协议，由 IETF 的 RFC 793 定义。<br>TCP的特点是:</p>
+<p>传输控制协议（TCP，Transmission Control Protocol）是一种面向连接、可靠的、基于字节流的传输层通信协议，由 IETF 的 RFC 793 定义。</p>
 </blockquote>
+<p>TCP的特点是:</p>
 <ul>
 <li>基于流的设计</li>
 <li>面向连接</li>
@@ -164,8 +165,9 @@
 <li>保证数据顺序</li>
 </ul>
 <h2 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h2><blockquote>
-<p>Internet 协议集支持一个无连接的传输协议，该协议称为用户数据报协议（UDP，User Datagram Protocol）。UDP 为应用程序提供了一种无需建立连接&gt;就可以发送封装的 IP 数据包的方法。RFC 768 描述了 UDP。<br>UDP的特点是:</p>
+<p>Internet 协议集支持一个无连接的传输协议，该协议称为用户数据报协议（UDP，User Datagram Protocol）。UDP 为应用程序提供了一种无需建立连接就可以发送封装的 IP 数据包的方法。RFC 768 描述了 UDP。</p>
 </blockquote>
+<p>UDP的特点是:</p>
 <ul>
 <li>UDP 是非连接协议，也就是不会和终端建立连接</li>
 <li>UDP 包信息只有 8 个字节</li>
@@ -194,19 +196,22 @@
                
             <div class="read-more-item">
                 <span class="read-more-item-dim">Older Post</span>
-                <h2 class="post-list__post-title post-title"><a href="/2020/12/23/pub_sub/" title="发布订阅者模式">发布订阅者模式</a></h2>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/24/udp/" title="UDP协议详解">UDP协议详解</a></h2>
                 <p class="excerpt">
                 
-                前言在昨天，我们了解了什么是观察者模式，并且知道了它实现的原理。今天，我们来看一个和它类似但又不完全相同的设计模式，发布订阅者模式。
-什么是发布订阅模式总体上来说，发布订阅模式与观察者模式是相似的，但发布订阅比观察者多了一个中间层的调度中心，用来对发布者发布的信息进行处理再发布到订阅者。通俗来讲，就
+                前言前面我们了解了网络协议，网络协议对我们前端工程师来说，是必须要掌握的知识。今天，我们先来看看UDP。
+UDP协议的特点我对UDP协议的特点的理解无非就是三点:
+
+UDP协议是无连接的，也就是说不需要在正式传递数据之前先连接起双方，传输快。
+UDP协议只是数据报文的搬运工，不保证有序且不丢失的传递
                 &hellip;
                 </p>
-                <div class="post-list__meta"><time datetime="2020-12-22T16:00:00.000Z" class="post-list__meta--date date"
-  >2020-12-23</time
+                <div class="post-list__meta"><time datetime="2020-12-23T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-24</time
 >
  &#8226; <span class="post-list__meta--tags tags">于 
   <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
-</span><a class="btn-border-small" href="/2020/12/23/pub_sub/">继续阅读</a></div>
+</span><a class="btn-border-small" href="/2020/12/24/udp/">继续阅读</a></div>
                        
             </div>
         

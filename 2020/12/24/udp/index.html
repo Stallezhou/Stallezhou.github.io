@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>UDP协议详解 | 周龙的博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前端随手记">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="UDP协议详解 | 周龙的博客">
+    <meta name="twitter:description" content="前端随手记">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="UDP协议详解 | 周龙的博客">
+    <meta property="og:description" content="前端随手记">
+
+    
+    <meta name="author" content="stallezhou">
+    
+    
+<link rel="stylesheet" href="/css/vno.css">
+
+    
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+
+    
+    <link rel="icon" href="/images/avatar-small.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+
+    <link rel="canonical" href="http://www.stallezhou.cn/2020/12/24/udp/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+    
+<script src="/js/main.js"></script>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 周龙的博客 的主页"><img src="/images/avatar.jpg" width="80" alt="周龙的博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 周龙的博客">周龙的博客</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">前端随手记</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/stallezhou" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2020-12-23T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-24</time
+>
+ &#8226; <span class="post-meta__tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">UDP协议详解</h1>
+  </header>
+
+  <section class="post">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前面我们了解了网络协议，网络协议对我们前端工程师来说，是必须要掌握的知识。今天，我们先来看看UDP。</p>
+<h2 id="UDP协议的特点"><a href="#UDP协议的特点" class="headerlink" title="UDP协议的特点"></a>UDP协议的特点</h2><p>我对UDP协议的特点的理解无非就是三点:</p>
+<ol>
+<li>UDP协议是无连接的，也就是说不需要在正式传递数据之前先连接起双方，传输快。</li>
+<li>UDP协议只是数据报文的搬运工，不保证有序且不丢失的传递到对端。</li>
+<li>UDP协议没有任何控制流量的算法</li>
+</ol>
+<p>接下来，我们来详细了解这三个特点</p>
+<h2 id="面向无连接"><a href="#面向无连接" class="headerlink" title="面向无连接"></a>面向无连接</h2><p>UDP发送数据时不需要和TCP一样在发送数据前进行三次握手建立连接的，想发数据就可以开始发送了。并且UDP不对报文进行任何拆分和拼接操作。具体来说就是:</p>
+<ul>
+<li>在发送端，应用层将数据传递给传输层的 UDP 协议，UDP 只会给数据增加一个 UDP 头标识下是 UDP 协议，然后就传递给网络层了</li>
+<li>在接收端，网络层将数据传递给传输层，UDP 只去除 IP 报文头就传递给应用层，不会任何拼接操作</li>
+</ul>
+<h2 id="不可靠性"><a href="#不可靠性" class="headerlink" title="不可靠性"></a>不可靠性</h2><p>至于为什么不可靠，相信大家都清楚。通信都不需要连接，想发就发，这样的情况肯定不可靠。并且收到什么数据就传递什么数据，并且也不会备份数据，发送方也不会关心对方是否已经正确接收到数据。但还有另外一点就是，UDP没有拥塞控制，因我们网络环境时好时坏，UDP一直以恒定的速度发送数据。即使网络条件不好，也不会对发送速率进行调整，这样的弊端就是在网络条件不好的情况下可能会导致丢包。但是优点也很明显，就是在某些实时性要求高的场景(比如联网游戏)就需要使用UDP而不是TCP</p>
+<h2 id="高效"><a href="#高效" class="headerlink" title="高效"></a>高效</h2><p>从上面我们可以知道，UDP不是那么可靠，或者说根本不可靠。但是，正是因为它的不可靠，给他带来了另外一个优点就是，它没TCP那么复杂，也不需要保证数据不丢失且有序的到达。<br>所以它的头部开销非常小，只有八字节，相比TCP的至少20字节来看是少的多，在传输时是很高效的。</p>
+<p><img src="http://img.stallezhou.cn/blog/UDP_header.png"></p>
+<p>UDP头部包含了以下数据:</p>
+<ul>
+<li>两个十六位的端口号，分别为源端口（可选字段）和目标端口</li>
+<li>整个数据报文的长度</li>
+<li>整个数据报文的检验和（IPv4 可选 字段），该字段用于发现头部信息和数据中的错误</li>
+</ul>
+<h2 id="传输方式"><a href="#传输方式" class="headerlink" title="传输方式"></a>传输方式</h2><p>UDP 不止支持一对一的传输方式，同样支持一对多，多对多，多对一的方式，也就是说 UDP 提供了单播，多播，广播的功能。</p>
+<h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>虽然UDP有很多缺点，但是正因为这些缺点造就了它高效的特性，在很多实时性要求高的地方都有它的身影</p>
+<h3 id="网络直播"><a href="#网络直播" class="headerlink" title="网络直播"></a>网络直播</h3><p>想必在座的各位应该都看过网络直播，不管是游戏还是其他的。大家会不会经常遇到这种情况，就是画面卡顿局部出现像马赛克的东西，这其实就是使用UDP协议导致的，因为UDP协议不保证不丢包，所以马赛克的地方就是丢包导致的。</p>
+<h3 id="联网游戏"><a href="#联网游戏" class="headerlink" title="联网游戏"></a>联网游戏</h3><p>这里的联网游戏有很多，我就不一一列举，我就举一个我自己玩的，lol。虽然我不知道它底层到底是什么协议，但对于这种实时性很高的游戏来说。不用UDP是不行的，为什么呢？首先，对于这类游戏来说，用户量比较大，同时在线人数多，如果都用TCP的话，需要给每个用户建立一个TCP连接，这很显然会出现服务器不够用的情况，因为每台服务器可提供支撑的TCP连接数量是非常有限的。再者，因为TCP会严格控制传输的正确性，如果用户因为网络不稳定导致页面卡顿，如果网络恢复后再传给我旧的画面，是肯定不能接受的。用户肯定是想要最新的画面，所以我说不用UDP是不行的。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>UDP虽然简单，但也是我们生活中不可或缺的一部分。努力做好自己本分的工作才是最重要的，所以加油吧，打工人</p>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Newer Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/24/网络协议/" title="网络协议">网络协议</a></h2>
+                <p class="excerpt">
+                
+                前言在我们的生活中，信息传播扮演了一个非常厉害的角色，它让我们可以听见东西，看见东西，闻到东西。从古代的飞鸽传书、八百里加急以及现在的语音通话、视频通话。可以看到，从古至今，信息让我们的生活更加丰富，让彼此的距离可变得更近。古代的飞鸽传书，飞鸽帮我们传递了信息，八百里加急，传令兵帮我们传递了信息。那
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2020-12-23T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-24</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2020/12/24/网络协议/">继续阅读</a></div>
+                           
+            </div>
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/23/pub_sub/" title="发布订阅者模式">发布订阅者模式</a></h2>
+                <p class="excerpt">
+                
+                前言在昨天，我们了解了什么是观察者模式，并且知道了它实现的原理。今天，我们来看一个和它类似但又不完全相同的设计模式，发布订阅者模式。
+什么是发布订阅模式总体上来说，发布订阅模式与观察者模式是相似的，但发布订阅比观察者多了一个中间层的调度中心，用来对发布者发布的信息进行处理再发布到订阅者。通俗来讲，就
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2020-12-22T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-23</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2020/12/23/pub_sub/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>
