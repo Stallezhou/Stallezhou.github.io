@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>TCP详解 | 周龙的博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前端随手记">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="TCP详解 | 周龙的博客">
+    <meta name="twitter:description" content="前端随手记">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="TCP详解 | 周龙的博客">
+    <meta property="og:description" content="前端随手记">
+
+    
+    <meta name="author" content="stallezhou">
+    
+    
+<link rel="stylesheet" href="/css/vno.css">
+
+    
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+
+    
+    <link rel="icon" href="/images/avatar-small.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+
+    <link rel="canonical" href="http://www.stallezhou.cn/2020/12/25/tcp/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+    
+<script src="/js/main.js"></script>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 周龙的博客 的主页"><img src="/images/avatar.jpg" width="80" alt="周龙的博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 周龙的博客">周龙的博客</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">前端随手记</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/stallezhou" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2020-12-24T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-25</time
+>
+ &#8226; <span class="post-meta__tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">TCP详解</h1>
+  </header>
+
+  <section class="post">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我们在昨天了解了UDP，今天就来看看提起UDP，不得不说的TCP。今天我们会比较详细地介绍TCP，这是因为TCP在我们生活中，应用场景比UDP多的多，而且TCP更是能够帮助我们解决各种前端问题。</p>
+<h2 id="头部"><a href="#头部" class="headerlink" title="头部"></a>头部</h2><p>我们先看一张TCP头部的图，来认识一下TCP的头部</p>
+<p><img src="http://img.stallezhou.cn/blog/tcp_header.png"></p>
+<p>我们可以看到TCP头部比UDP头部复杂的多，接下来我们看看TCP头部中的相关字段的解释:<br><code>Source Port(TCP源端口)</code>:16位的源端口中包含发送方应用程序对应的端口。源端口和源IP地址标示报文发送端的地址<br><code>Destination Port(TCP目的端口)</code>:16位的目的端口域定义传输的目的地,这个端口指明报文接收计算机上的应用程序地址接口</p>
+<blockquote>
+<p>TCP的源端口、目的端口、以及IP层的源IP地址、目的IP地址四元组唯一的标识了一个TCP连接，一个IP地址和一个端口号的组合叫做一个endpoint或者socket。也即一对endpoint或者一对socket唯一的标识了一个TCP连接。接收端的TCP层就是根据不同的端口号来将数据包传送给应用层的不同程序，这个过程叫做解复用(demultiplex)。相应的发送端会把应用层不同程序的数据映射到不同的端口号，这个过程叫做复用(multiplex)</p>
+</blockquote>
+<p><code>Sequence Number(TCP序列号,序列码SN)</code>:32位的序列号标识了TCP报文中第一个byte对应方向的传输中对应的字节序号，当SYN出现时，序列码实际上是初始序列码<code>ISN(Initial Sequence Number)</code>，而第一个数据字节是<code>ISN+1</code>,单位是byte。(例如发送端发送的一个TCP包大小为15byte，SN为5，则发送端接下来发送的第一个数据包的时候,SN应该设置为5+15=20.通过序列号,TCP接收端可以识别出重复接收到的TCP包，从而丢弃重复包，同时对于乱序数据包也可以依靠序列号进行重排序，进而对高层提供有效的数据流，另外SYN标志和FIN标志在逻辑上也占用一个byte，当SYN标志位有效的时候，该字段也被叫做<code>ISN</code>)</p>
+<p><code>Acknowledgment Number(TCP应答号,ACK Number或ACK Field)</code>:32位的ACK Number标识了报文发送端期望接收的字节序列，如果设置了ACK控制位，这个值表示一个准备接收的包的序列码，<code>注意是准备接收的包</code>。(例如在当前接收端己接收到的一个大小为15byte的数据包，SN为5,则发送端可能会回复一个确认收到的数据包，如果这个数据包之前的数据也都已经接收到了，这个数据包中的ACK Number则设置为5+15 =20，表示20byte之前的数据都已经收到了.另外，如果这个数据之前有个SN为3，大小为2byte的包数据丢失的话，则在接收端收到这个SN为5的乱序数据包时，协议会要求接收端回复一个ACK确认包，这个确认包中的ACK Number只能设置为3）</p>
+<p><code>Header Length(头长)</code>:4位包括TCP头大小，指示TCP的头部长度，即数据从何处开始。最大为15，单位是32bit</p>
+<p><code>Reserved(保留)</code>:头部保留位，4位值域，这些位必须是0。为了将来定义新的用途所保留，其中RFC3540将Reserved字段中最后一位定义为Nonce标志，在后面的拥塞控制我们会简单介绍Nonce标志。</p>
+<p><code>Code Bits(标志)</code>:8位标志位，下面将单独介绍Code Bits</p>
+<p><code>Windows Size(窗口大小)</code>:16位，该值指示了从ACK Number开始还愿意接收多少byte的数据量，也就是用来表示当前接收端的接收窗口还有多少剩余空间。用于TCP的流量控制</p>
+<p><code>Checksnum(校验位)</code>:16位TCP头。发送端基于数据内容计算一个数值，接收端要与发送端数值结果完全一样，才能证明数据的有效性。接收端checksum校验失败的时候会直接丢掉这个数据包。CheckSum是根据伪头+TCP头+TCP数据三部分进行计算的。另外对于大的数据包，checksum并不能可靠的反应比特错误，应用层应该再添加自己的校验方式。</p>
+<p><code>Urgent  Pointer（紧急,优先指针）</code>:16位，指向后面是优先数据的字节，在URG标志设置了时才有效。如果URG标志没有被设置，紧急域作为填充。加快处理标示为紧急的数据段。</p>
+<p><code>Option(选项)</code>:长度不定，但长度必须以是32bits的整数倍。常见的选项包括MSS、SACK、Timestamp等等，后续的内容会分别介绍相关选项。</p>
+<h2 id="标志位"><a href="#标志位" class="headerlink" title="标志位"></a>标志位</h2><p>在<code>Code Bits(标志)</code>中的八位标志位解释分别如下:</p>
+<p><code>CWR(Congestion Window Reduce)</code>：拥塞窗口减少标志被发送主机设置，用来表明它接收到了设置ECE标志的TCP包，发送端通过降低发送窗口的大小来降低发送速率</p>
+<p><code>ECE(ECN Echo)</code>：ECN响应标志被用来在TCP3次握手时表明一个TCP端是具备ECN功能的，并且表明接收到的TCP包的IP头部的ECN被设置为11。更多信息请参考RFC793。</p>
+<p><code>URG(Urgent)</code>：该标志位置位表示紧急(The urgent pointer) 标志有效。该标志位目前已经很少使用参考后面流量控制和窗口管理部分的介绍。</p>
+<p><code>ACK(Acknowledgment)</code>：取值1代表Acknowledgment Number字段有效，这是一个确认的TCP包，取值0则不是确认包。后续文章介绍中当ACK标志位有效的时候我们称呼这个包为ACK包，使用大写的ACK称呼。</p>
+<p><code>PSH(Push)</code>：该标志置位时，一般是表示发送端缓存中已经没有待发送的数据，接收端不将该数据进行队列处理，而是尽可能快将数据转由应用处理。在处理 telnet 或 rlogin 等交互模式的连接时，该标志总是置位的。</p>
+<p><code>RST(Reset)</code>：用于复位相应的TCP连接。通常在发生异常或者错误的时候会触发复位TCP连接。</p>
+<p><code>SYN(Synchronize)</code>：同步序列编号(Synchronize Sequence Numbers)有效。该标志仅在三次握手建立TCP连接时有效。它提示TCP连接的服务端检查序列编号，该序列编号为TCP连接初始端(一般是客户端)的初始序列编号。在这里，可以把TCP序列编号看作是一个范围从0到4，294，967，295的32位计数器。通过TCP连接交换的数据中每一个字节都经过序列编号。在TCP报头中的序列编号栏包括了TCP分段中第一个字节的序列编号。类似的后续文章介绍中当这个SYN标志位有效的时候我们称呼这个包为SYN包。</p>
+<p><code>FIN(Finish)</code>：带有该标志置位的数据包用来结束一个TCP会话，但对应端口仍处于开放状态，准备接收后续数据。当FIN标志有效的时候我们称呼这个包为FIN包。</p>
+<blockquote>
+<p>另外我们一般称呼链路层的发出去的数据包为帧(frame)，称呼网络层发给链路层的数据包为包(packet)，称呼传输层发给网络层的数据包为段(segment)。但是正如我们描述所用，段、包、帧也经常统称为数据包或者数据报文。对应用层来说TCP是一个双向对称的全双工(full-duplex)协议，也就是说应用层可以同时发送数据和接收数据。这就意味着数据流在一个方向上的传输是独立于另一个方向的传输的，每个方向上都有独立的SN。</p>
+</blockquote>
+<h2 id="状态机"><a href="#状态机" class="headerlink" title="状态机"></a>状态机</h2><p>TCP的状态机是非常复杂的，并且与建立断开连接时的握手息息相关，接下来我们来详细描述两种握手机制。在这之前，我们先了解几个基本概念。</p>
+<ul>
+<li>RTT(Round Trip-time),该指标表示发送端发送数据到接收到对端的数据所需的往返时间。</li>
+<li>MSl(Maximum Segment Lifetime),最大段生存期，指报文在网络中生存的时间，超时将被抛弃。</li>
+<li>MSS(Maximum Segment Size),一个分段的最大数据量</li>
+<li>TCB(Transmission Control Block),主机收到一个TCP包时，用两端的IP地址与端口号来标识这个TCP包属于哪个session。使用一张表来存储所有的session，表中的每条称作Transmission Control Block（TCB），TCB定义一次连接使用的源端口、目的端口、目的ip、序号、应答序号、对方窗口大小、己方窗口大小、tcp状态、tcp输入/输出队列、应用层输出队列、tcp的重传有关变量。<h2 id="建立连接三次握手"><a href="#建立连接三次握手" class="headerlink" title="建立连接三次握手"></a>建立连接三次握手</h2></li>
+</ul>
+<p>首先我们假设发起请求的一端被我们称为客户端，被动连接的一端是服务端。不管是客户端还是服务端，TCP连接完成后都能发送数据和接收数据。正如上面所讲。TCP是一个全双工协议</p>
+<p>最开始时，两端都为<code>CLOSED</code>状态,在通信开始前，双方都会创建TCB。服务器创建完TCB后便进入<code>LISTEN</code>状态，此时开始等待客户端发送数据。</p>
+<h3 id="第一次握手"><a href="#第一次握手" class="headerlink" title="第一次握手"></a>第一次握手</h3><p>客户端向服务端发起请求，该请求中包含自身的数据通信初始序号，请求发送后，客户端进入<code>SYN-SENT</code>状态</p>
+<h3 id="第二次握手"><a href="#第二次握手" class="headerlink" title="第二次握手"></a>第二次握手</h3><p>服务端收到连接请求报文段后，如果同意连接，则会发送一个应答，该应答中也会包含自身的数据通讯初始序号，发送完成后便进入<code>SYN-RECEIVED</code>状态。</p>
+<h3 id="第三次握手"><a href="#第三次握手" class="headerlink" title="第三次握手"></a>第三次握手</h3><p>当客户端收到连接同意的应答后，还要向服务端发送一个确认报文。客户端发完这个报文段后便进入<code>ESTABLISHED</code>状态，服务端收到这个应答后也进入<code>ESTABLISHED</code>状态，此时连接建立成功。</p>
+<blockquote>
+<p>注意:第三次握手中可以包含数据，通过快速打开（TFO）技术就可以实现这一功能。其实只要涉及到握手的协议，都可以使用类似 TFO 的方式，客户端和服务端存储相同的 cookie，下次握手时发出 cookie 达到减少 RTT 的目的。另外，如果在建立连接中，任意一端掉线，TCP 都会重发 SYN 包，一般会重试五次，在建立连接中可能会遇到 SYN Flood 攻击。遇到这种情况你可以选择调低重试次数或者干脆在不能处理的情况下拒绝请求。</p>
+</blockquote>
+<h2 id="断开连接四次握手"><a href="#断开连接四次握手" class="headerlink" title="断开连接四次握手"></a>断开连接四次握手</h2><p>TCP是全双工的，在断开时两端都需要发送FIN和ACK</p>
+<h3 id="第一次握手-1"><a href="#第一次握手-1" class="headerlink" title="第一次握手"></a>第一次握手</h3><p>若<code>客户端A</code>认为数据发送完成，则它需要向<code>服务端B</code>发送连接释放请求。</p>
+<h3 id="第二次握手-1"><a href="#第二次握手-1" class="headerlink" title="第二次握手"></a>第二次握手</h3><p><code>服务端B</code>收到连接释放请求后，会告诉应用层要释放<code>TCP</code>链接。然后会发送<code>ACK</code>包，并进入<code>CLOSE_WAIT</code>状态，此时表明<code>客户端A</code>到<code>服务端B</code>的连接已经释放，不再接收<code>客户端A</code>发的数据了。但是因为<code>TCP</code>连接是双向的，所以<code>B</code>仍旧可以发送数据给<code>A</code>。</p>
+<h3 id="第三次握手-1"><a href="#第三次握手-1" class="headerlink" title="第三次握手"></a>第三次握手</h3><p><code>服务端B</code>如果此时还有没发完的数据会继续发送，完毕后会向<code>客户端A</code>发送连接释放请求，然后<code>服务端B</code>便进入<code>LAST-ACK</code>状态。</p>
+<blockquote>
+<p>PS:通过延迟确认的技术（通常有时间限制，否则对方会误认为需要重传），可以将第二次和第三次握手合并，延迟 ACK 包的发送。</p>
+</blockquote>
+<h3 id="第四次握手"><a href="#第四次握手" class="headerlink" title="第四次握手"></a>第四次握手</h3><p><code>客户端A</code>收到释放请求后，向<code>服务端B</code>发送确认应答，此时<code>客户端A</code>进入<code>TIME-WAIT</code>状态。该状态会持续2MSL时间，若该时间段内没有<code>服务端B</code>的重发请求的话，就进入<code>CLOSED</code>状态。当<code>服务端B</code>收到确认应答后，也便进入<code>CLOSED</code>状态。</p>
+<p><strong>为什么 A 要进入 TIME-WAIT 状态，等待 2MSL 时间后才进入 CLOSED 状态？</strong></p>
+<p>为了保证 B 能收到 A 的确认应答。若 A 发完确认应答后直接进入 CLOSED 状态，如果确认应答因为网络问题一直没有到达，那么会造成 B 不能正常关闭。</p>
+<h2 id="ARQ协议"><a href="#ARQ协议" class="headerlink" title="ARQ协议"></a>ARQ协议</h2><p><code>ARQ(Automatic Repeat-reQuest)</code>协议也就是超时重传机制,通过确认和超时机制保证了数据的正确送达，ARQ 协议包含停止等待 ARQ 和连续 ARQ 两种协议。</p>
+<h3 id="停止等待ARQ"><a href="#停止等待ARQ" class="headerlink" title="停止等待ARQ"></a>停止等待ARQ</h3><h4 id="正常传输过程"><a href="#正常传输过程" class="headerlink" title="正常传输过程"></a>正常传输过程</h4><p>只要 A 向 B 发送一段报文，都要停止发送并启动一个定时器，等待对端回应，在定时器时间内接收到对端应答就取消定时器并发送下一段报文。</p>
+<h4 id="报文丢失或出错"><a href="#报文丢失或出错" class="headerlink" title="报文丢失或出错"></a>报文丢失或出错</h4><p>在报文传输的过程中可能会出现丢包。这时候超过定时器设定的时间就会再次发送丢失的数据直到对端响应，所以需要每次都备份发送的数据。<br>即使报文正常的传输到对端，也可能出现在传输过程中报文出错的问题。这时候对端会抛弃该报文并等待 A 端重传。</p>
+<blockquote>
+<p>PS：一般定时器设定的时间都会大于一个 RTT 的平均时间。</p>
+</blockquote>
+<h4 id="ACK超时或丢失"><a href="#ACK超时或丢失" class="headerlink" title="ACK超时或丢失"></a>ACK超时或丢失</h4><p>对端传输的应答也可能出现丢失或超时的情况。那么超过定时器时间 A 端照样会重传报文。这时候 B 端收到相同序号的报文会丢弃该报文并重传应答，直到 A 端发送下一个序号的报文。<br>在超时的情况下也可能出现应答很迟到达，这时 A 端会判断该序号是否已经接收过，如果接收过只需要丢弃应答即可。</p>
+<p>从上面的描述中大家肯定可以发现这肯定不是一个高效的方式。假设在良好的网络环境中，每次发送数据都需要等待片刻肯定是不能接受的。那么既然我们不能接受这个不那么高效的协议，就来继续学习相对高效的协议吧。</p>
+<h3 id="连续ARQ"><a href="#连续ARQ" class="headerlink" title="连续ARQ"></a>连续ARQ</h3><p>在连续 ARQ 中，发送端拥有一个发送窗口，可以在没有收到应答的情况下持续发送窗口内的数据，这样相比停止等待 ARQ 协议来说减少了等待时间，提高了效率。</p>
+<h4 id="累计确认"><a href="#累计确认" class="headerlink" title="累计确认"></a>累计确认</h4><p>连续 ARQ 中，接收端会持续不断收到报文。如果和停止等待 ARQ 中接收一个报文就发送一个应答一样，就太浪费资源了。通过累计确认，可以在收到多个报文以后统一回复一个应答报文。报文中的 ACK 标志位可以用来告诉发送端这个序号之前的数据已经全部接收到了，下次请发送这个序号后的数据。</p>
+<p>但是累计确认也有一个弊端。在连续接收报文时，可能会遇到接收到序号 5 的报文后，并未接收到序号 6 的报文，然而序号 7 以后的报文已经接收。遇到这种情况时，ACK 只能回复 6，这样就会造成发送端重复发送数据的情况。</p>
+<h2 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h2><p>在上面介绍头部时讲到了窗口大小。在 TCP 中，两端其实都维护着窗口：分别为发送端窗口和接收端窗口。发送端窗口包含已发送但未收到应答的数据和可以发送但是未发送的数据。发送端窗口是由接收窗口剩余大小决定的。接收方会把当前接收窗口的剩余大小写入应答报文，发送端收到应答后根据该值和当前网络拥塞情况设置发送窗口的大小，所以发送窗口的大小是不断变化的。</p>
+<p>当发送端接收到应答报文后，会随之将窗口进行滑动</p>
+<p><code>滑动窗口</code>是一个很重要的概念，它帮助 TCP 实现了流量控制的功能。接收方通过报文告知发送方还可以发送多少数据，从而保证接收方能够来得及接收数据，防止出现接收方带宽已满，但是发送方还一直发送数据的情况。</p>
+<h3 id="ZERO窗口"><a href="#ZERO窗口" class="headerlink" title="ZERO窗口"></a>ZERO窗口</h3><p>在发送报文的过程中，可能会遇到对端出现零窗口的情况。在该情况下，发送端会停止发送数据，并启动<code>persistent timer</code>。该定时器会定时发送请求给对端，让对端告知窗口大小。在重试次数超过一定次数后，可能会中断 TCP 链接。</p>
+<h2 id="拥塞处理"><a href="#拥塞处理" class="headerlink" title="拥塞处理"></a>拥塞处理</h2><p>拥塞处理和流量控制不同，后者是作用于接收方，保证接收方来得及接受数据。而前者是作用于网络，防止过多的数据拥塞网络，避免出现网络负载过大的情况。<br>拥塞处理包括了四个算法，分别为：慢开始，拥塞避免，快速重传，快速恢复。</p>
+<h3 id="慢开始算法"><a href="#慢开始算法" class="headerlink" title="慢开始算法"></a>慢开始算法</h3><p>慢开始算法，顾名思义，就是在传输开始时将发送窗口慢慢指数级扩大，从而避免一开始就传输大量数据导致网络拥塞。想必大家都下载过资源，每当我们开始下载的时候都会发现下载速度是慢慢提升的，而不是一蹴而就直接拉满带宽。<br>慢开始算法步骤具体如下:</p>
+<ol>
+<li>连接初始设置拥塞窗口(Congestion Window)为1MSS</li>
+<li>每过一个RTT就将窗口大小乘2</li>
+<li>指数级增长肯定不能没有限制的，所以有一个阈值限制，当窗口大小大于阈值时就会启动拥塞避免算法。</li>
+</ol>
+<h3 id="拥塞避免算法"><a href="#拥塞避免算法" class="headerlink" title="拥塞避免算法"></a>拥塞避免算法</h3><p>拥塞避免算法相比简单点，每过一个 RTT 窗口大小只加一，这样能够避免指数级增长导致网络拥塞，慢慢将大小调整到最佳值。在传输过程中可能定时器超时的情况，这时候 TCP 会认为网络拥塞了，会马上进行以下步骤：</p>
+<ol>
+<li>将阈值设为当前拥塞窗口的一半</li>
+<li>将拥塞窗口设为 1 MSS</li>
+<li>启动拥塞避免算法</li>
+</ol>
+<h3 id="快速重传"><a href="#快速重传" class="headerlink" title="快速重传"></a>快速重传</h3><p>快速重传一般和快恢复一起出现。一旦接收端收到的报文出现失序的情况，接收端只会回复最后一个顺序正确的报文序号。如果发送端收到三个重复的 ACK，无需等待定时器超时而是直接启动快速重传算法。具体算法分为两种。</p>
+<h4 id="TCP-Taho-实现如下"><a href="#TCP-Taho-实现如下" class="headerlink" title="TCP Taho 实现如下"></a>TCP Taho 实现如下</h4><ol>
+<li>将阈值设为当前拥塞窗口的一半</li>
+<li>将拥塞窗口设为 1 MSS</li>
+<li>重新开始慢开始算法<h4 id="TCP-Reno-实现如下"><a href="#TCP-Reno-实现如下" class="headerlink" title="TCP Reno 实现如下"></a>TCP Reno 实现如下</h4></li>
+<li>拥塞窗口减半</li>
+<li>将阈值设为当前拥塞窗口</li>
+<li>进入快恢复阶段（重发对端需要的包，一旦收到一个新的 ACK 答复就退出该阶段），这种方式在丢失多个包的情况下就不那么好了</li>
+<li>使用拥塞避免算法</li>
+</ol>
+<h4 id="TCP-New-Reno-改进后的快恢复"><a href="#TCP-New-Reno-改进后的快恢复" class="headerlink" title="TCP New Reno 改进后的快恢复"></a>TCP New Reno 改进后的快恢复</h4><p>TCP New Reno 算法改进了之前 TCP Reno 算法的缺陷。在之前，快恢复中只要收到一个新的 ACK 包，就会退出快恢复。</p>
+<p>在 TCP New Reno 中，TCP 发送方先记下三个重复 ACK 的分段的最大序号。</p>
+<p>假如我有一个分段数据是 1 ~ 10 这十个序号的报文，其中丢失了序号为 3 和 7 的报文，那么该分段的最大序号就是 10。发送端只会收到 ACK 序号为 3 的应答。这时候重发序号为 3 的报文，接收方顺利接收的话就会发送 ACK 序号为 7 的应答。这时候 TCP 知道对端是有多个包未收到，会继续发送序号为 7 的报文，接收方顺利接收并会发送 ACK 序号为 11 的应答，这时发送端认为这个分段接收端已经顺利接收，接下来会退出快恢复阶段。</p>
+<h2 id="后序"><a href="#后序" class="headerlink" title="后序"></a>后序</h2><p>在这一篇文章中，有大量的专业术语，需要大家反复推敲研读。</p>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/24/网络协议/" title="网络协议">网络协议</a></h2>
+                <p class="excerpt">
+                
+                前言在我们的生活中，信息传播扮演了一个非常厉害的角色，它让我们可以听见东西，看见东西，闻到东西。从古代的飞鸽传书、八百里加急以及现在的语音通话、视频通话。可以看到，从古至今，信息让我们的生活更加丰富，让彼此的距离可变得更近。古代的飞鸽传书，飞鸽帮我们传递了信息，八百里加急，传令兵帮我们传递了信息。那
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2020-12-23T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-24</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2020/12/24/网络协议/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>
