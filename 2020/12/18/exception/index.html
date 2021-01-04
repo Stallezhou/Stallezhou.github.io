@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>不得不了解的前端异常处理 | 周龙的博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前端随手记">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="不得不了解的前端异常处理 | 周龙的博客">
+    <meta name="twitter:description" content="前端随手记">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="不得不了解的前端异常处理 | 周龙的博客">
+    <meta property="og:description" content="前端随手记">
+
+    
+    <meta name="author" content="stallezhou">
+    
+    
+<link rel="stylesheet" href="/css/vno.css">
+
+    
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+
+    
+    <link rel="icon" href="/images/avatar-small.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+
+    <link rel="canonical" href="http://www.stallezhou.cn/2020/12/18/exception/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+    
+<script src="/js/main.js"></script>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 周龙的博客 的主页"><img src="/images/avatar.jpg" width="80" alt="周龙的博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 周龙的博客">周龙的博客</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">前端随手记</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/stallezhou" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2020-12-17T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-18</time
+>
+ &#8226; <span class="post-meta__tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">不得不了解的前端异常处理</h1>
+  </header>
+
+  <section class="post">
+    <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在我们平时的开发中，总是会遇到各种各样的问题，然后去调试处理。而且我相信，在各位开发的过程中，调试占用的开发时间非常高，因为我们不仅要进行逻辑处理，还要处理相关的问题异常。所以，既然我们天天和异常打交道，就需要正确认识异常，并作出合适的异常处理就显得尤为重要了。</p>
+<h1 id="什么是异常"><a href="#什么是异常" class="headerlink" title="什么是异常"></a>什么是异常</h1><p>用直白的话来说，就是 <code>程序发生了意想不到的情况，这种情况影响到了程序的正确运行</code>。</p>
+<p>从根本上来说，异常就是一个 <code>数据结构</code>，其保存了异常发生的相关信息，比如<code>错误码</code>和<code>错误信息</code>等。以JS为标准的内置对象Error为例，其标准属性有<code>name</code>和<code>message</code>,然而不同的浏览器厂商有自己的自定义属性，这些属性并不通用，比如Mozilla就增加了filename和stack等属性。</p>
+<p>值得我们注意的是，错误只有被抛出，才会产生异常，不被抛出的错误不会产生异常。比如:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"> <span class="built_in">console</span>.log(<span class="string">&#x27;start&#x27;</span>)</span><br><span class="line"> <span class="keyword">new</span> <span class="built_in">Error</span>();</span><br><span class="line"> <span class="built_in">console</span>.log(<span class="string">&#x27;end&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
+<p>这段代码不会产生任何的异常，控制台也不会有任何输出。</p>
+<h1 id="异常的分类"><a href="#异常的分类" class="headerlink" title="异常的分类"></a>异常的分类</h1><p>在我们平时的开发中，按照产生异常时我们程序是否在运行，可以把异常分为<code>编译时异常</code>和<code>运行时异常</code>。<br>编译时异常通常是指的我们源代码在编译成可执行代码之前产生的异常。而运行时异常是指可执行代码在被装载到内存中执行之后产生的异常。</p>
+<h2 id="编译时异常"><a href="#编译时异常" class="headerlink" title="编译时异常"></a>编译时异常</h2><p>现在前端比较火的TS，我们知道使用TS最终会被编译成可执行的JS，从而在JS Runtime中执行。TS在编译成JS时，就有可能存在编译时异常。比如:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> s:<span class="built_in">string</span> = <span class="number">123</span></span><br></pre></td></tr></table></figure>
+<p>相信大家了解TS的都知道，这是很明显的错误，我们在声明s时，定义它的类型为string,但是赋值了一个number。当我们在尝试编译时就会有异常抛出:</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tsc a.ts</span><br><span class="line">a.ts:<span class="number">1</span>:<span class="number">7</span> - error TS2322: Type <span class="string">&#x27;123&#x27;</span> is not assignable to <span class="keyword">type</span> <span class="string">&#x27;string&#x27;</span>.</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="keyword">const</span> s: <span class="built_in">string</span> = <span class="number">123</span>;</span><br><span class="line"></span><br><span class="line">~</span><br><span class="line">Found <span class="number">1</span> error.</span><br></pre></td></tr></table></figure>
+<p>这个异常就是编译时异常，因为我的代码还没有执行。然而并不是用了ts才会有编译时异常，我们使用的js同样会存在编译时异常。有的人可能会问，js不是解释性语言吗？是边解释边执行，没有编译环节，怎么就有编译时异常？给大家举个例子就明白了:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"> <span class="built_in">console</span>.log(<span class="string">&#x27;start&#x27;</span>)</span><br><span class="line"> <span class="keyword">await</span> sa</span><br><span class="line"> <span class="built_in">console</span>.log(<span class="string">&#x27;end&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line">test()</span><br></pre></td></tr></table></figure>
+<p>相信大家能看明白上面代码的错误，上面的代码由于存在语法错误。不会编译通过，因此并不会打印start，侧面证明了这是一个编译时异常。尽管js是解释性语言，也依然存在编译阶段，这是必然的。因此自然也会有编译时异常。<br>总体来说，编译异常可以在代码被编译成最终代码前被发现，因此对我们的伤害更小。接下来，看一下令人心生畏惧的<code>运行时异常</code>。</p>
+<h2 id="运行时异常"><a href="#运行时异常" class="headerlink" title="运行时异常"></a>运行时异常</h2><p>相信各位同学在经历了开发工作后，对运行时异常都非常的熟悉啦。众所周知的NPE(Null Pointer Exception)就是经典的运行时异常。我们看一下一个例子:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;start&quot;</span>);</span><br><span class="line">  <span class="keyword">throw</span> <span class="number">1</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;end&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
+<p>执行上面的代码，在控制台中会先打印出start,然后抛出异常，程序终止执行。由于异常是在运行过程中抛出的，因此是运行时异常。相对于编译时异常，运行时异常更加难以发现。上面的例子可能比较简单，但是如果我的异常是隐藏在某一个流程控制语句里面呢？程序就可能在客户的电脑走入哪个跑出异常的特殊语句中，而你的电脑走入了正常语句。这就是著名的<code>《在我电脑上好好的》</code>事件。</p>
+<blockquote>
+<p>注意:end没有打印,并且test没有直接弹出运行栈(而是经过异常抛出后，被垃圾回收机制回收),实际上会弹出，只是和普通的返回不一样。</p>
+</blockquote>
+<h1 id="异常的传播"><a href="#异常的传播" class="headerlink" title="异常的传播"></a>异常的传播</h1><p>有了异常，肯定就会有异常处理。但是处理异常的前提是我们得知道异常是在哪里出现的，因此，我们需要了解异常的传播。实际上，异常的传播和浏览器事件有点类似，只不过浏览器事件是作用在<code>DOM这样的数据结构</code>中,异常传播是作用在<code>函数调用栈</code>这种数据结构中，并且事件存在捕获阶段，但是异常传播没有。不同于C语言，js异常传播是自动的。不需要我们手动的一层层传递，如果一个异常没有被catch。它会沿着调用栈一层层传递直到栈空。实际上，在异常处理中有两个关键词，它们是<code>「throw（抛出异常）」</code>和<code>「catch（处理异常）」</code>。当一个异常被抛出的时候，异常的传播就开始了。异常会不断传播直到遇到<code>第一个catch</code>。如果程序员没有手动 catch，那么一般而言程序会抛出类似<code>「unCaughtError」</code>，表示发生了一个异常，并且这个异常没有被程序中的任何catch语言处理。未被捕获的异常通常会被打印在控制台上， 里面有详细的堆栈信息，从而帮助程序员快速排查问题。实际上我们的程序目标是<code>「避免 unCaughtError」</code>这种异常，而不是一般性异常。</p>
+<h2 id="小前提"><a href="#小前提" class="headerlink" title="小前提"></a>小前提</h2><p>由于在我们的js内置的Error对象中没有code属性，只能根据message来呈现，很不方便，不是很方便，所以我们可以尝试做一下简单扩展。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> oldError = <span class="built_in">Error</span></span><br><span class="line"><span class="built_in">Error</span> = <span class="function"><span class="keyword">function</span>(<span class="params">&#123; code, message, fileName, lineNumber &#125;</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> error = <span class="keyword">new</span> oldError(message, fileName, lineNumber)</span><br><span class="line">  error.code = code</span><br><span class="line">  <span class="keyword">return</span> error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="手动抛出Or自动抛出"><a href="#手动抛出Or自动抛出" class="headerlink" title="手动抛出Or自动抛出"></a>手动抛出Or自动抛出</h2><p>异常既然可以有程序抛出，当然也可以由程序员主动抛出。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//手动抛出</span></span><br><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;I&#x27;m Exception.&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//自动抛出</span></span><br><span class="line"><span class="keyword">var</span> a = <span class="literal">null</span></span><br><span class="line">a.toString()  <span class="comment">// Thrown: TypeError: Cannot read property &#x27;toString&#x27; of null</span></span><br></pre></td></tr></table></figure>
+
+<p>自动抛出相信我们很容易理解，毕竟在开发中，处处都有可能存在程序自动抛出异常的代码。那么，我们什么时候该主动抛出异常呢？</p>
+<p>主动抛出的一个原则就是<code>我们已经预知程序不能正确进行下去</code>。比如我们要实现除法，首先我们要排除除数为0的情况。当除数为0的时候，我们就应该抛出异常了。当然部分同学会说我也可以返回一个特殊值，这当然也是可以的。因为每个团队标准不一致。我们在这里只讨论抛出异常的情况，当我们遇到除数为0的时候，我们应该告诉使用者，<code>你的输入是错误的</code>这种情况。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">divide</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  a = +a;</span><br><span class="line">  b = +b; <span class="comment">// 转化成数字</span></span><br><span class="line">  <span class="keyword">if</span> (!b) &#123;</span><br><span class="line">    <span class="comment">// 匹配 +0, -0, NaN</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(&#123;</span><br><span class="line">      code: <span class="number">1</span>,</span><br><span class="line">      message: <span class="string">&quot;Invalid dividend &quot;</span> + b,</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Number</span>.isNaN(a)) &#123;</span><br><span class="line">    <span class="comment">// 匹配 NaN</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(&#123;</span><br><span class="line">      code: <span class="number">2</span>,</span><br><span class="line">      message: <span class="string">&quot;Invalid divisor &quot;</span> + a,</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> a / b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码会在两种情况下抛出异常，告诉调用者你的输入是错误的。由于这两个异常都是程序员自动手动抛出的，因此是 <strong>「可预知的异常」</strong>。<br>刚才也说了，我们也可以通过返回值来区分异常输入。我们来看下返回值输入是什么，以及和异常有什么关系。</p>
+<h2 id="异常or返回"><a href="#异常or返回" class="headerlink" title="异常or返回"></a>异常or返回</h2><p>如果我们是基于异常形式（遇到不能处理的输入就抛出异常）。当有代码调用 divide 的时候，需要自己 catch。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">t</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    divide(<span class="string">&quot;foo&quot;</span>, <span class="string">&quot;bar&quot;</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="keyword">if</span> (err.code === <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">&quot;被除数必须是除0之外的数&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (err.code === <span class="number">2</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">&quot;除数必须是数字&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;不可预知的错误&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然而就像我们在上面说的，divide 函数设计的时候，也完全可以不用异常，而是使用返回值来区分。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">divide</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  a = +a;</span><br><span class="line">  b = +b; <span class="comment">// 转化成数字</span></span><br><span class="line">  <span class="keyword">if</span> (!b) &#123;</span><br><span class="line">    <span class="comment">// 匹配 +0, -0, NaN</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Error</span>(&#123;</span><br><span class="line">      code: <span class="number">1</span>,</span><br><span class="line">      message: <span class="string">&quot;Invalid dividend &quot;</span> + b,</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">Number</span>.isNaN(a)) &#123;</span><br><span class="line">    <span class="comment">// 匹配 NaN</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Error</span>(&#123;</span><br><span class="line">      code: <span class="number">2</span>,</span><br><span class="line">      message: <span class="string">&quot;Invalid divisor &quot;</span> + a,</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> a / b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，我们调用时处理方式也要做出相应改变</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">t</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> res = divide(<span class="string">&quot;foo&quot;</span>, <span class="string">&quot;bar&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (res.code === <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">&quot;被除数必须是除0之外的数&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (res.code === <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">&quot;除数必须是数字&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;不可预知的错误&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种函数设计和抛出异常的设计方式从功能上是一样的，只是告诉调用方的方式不同。如果你选择第二种，而不是抛出异常，那么实际上需要调用方书写额外的代码，用来区分正常情况和异常情况，这并不是一种良好的变成习惯。</p>
+<p>然而在 Go 等返回值可以为复数的语言中，我们无需使用上面蹩脚的方式，而是可以：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">res, err := divide(<span class="string">&quot;foo&quot;</span>, <span class="string">&quot;bar&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是和 Java 和 JS 等语言使用 try catch 不一样的地方，Go 是通过 panic recover defer 机制来进行异常处理的。感兴趣的可以去看看 Go 源码关于错误测试部分。</p>
+<p>可能大家对 Go 不太熟悉。没关系，我们继续看下 shell。实际上 shell 也是通过返回值来处理异常，我们可以通过 $? 拿到上一个命令的返回值，这本质上也是一种调用栈的传播行为，而是通过返回值而不是捕获来处理异常。</p>
+<blockquote>
+<p>作为函数返回值处理和 try catch 一样，这是语言的设计者和开发者共同决定的一件事情。</p>
+</blockquote>
+<p>上面提到了异常传播是作用在「函数调用栈」上的。当一个异常发生时，岂会沿着函数调用栈逐层返回，直到第一个 catch 语句。当然 catch 内部仍然可能触发异常（自动或手动）。如果 catch 语句内部发生了异常，也一样会沿着其函数调用栈继续执行上述逻辑，专业术语是 <strong>「stack unwinding」</strong>。</p>
+<blockquote>
+<p>实际上并不是所有的语言都会进行 stack unwinding，这个我们会在接下来的《运行时异常可以恢复么？》部分讲解。</p>
+</blockquote>
+<p><img src="http://img.stallezhou.cn/blog/exception.png"></p>
+<p>我们使用伪代码来实现一下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">exceptionBubble</span>(<span class="params">err,fn</span>)</span>&#123;</span><br><span class="line"><span class="keyword">if</span> (fn.hasCatchBlock()) &#123;</span><br><span class="line">    runCatchCode(error);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (callstack.isNotEmpty()) &#123;</span><br><span class="line">    bubble(error, callstack.pop());</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>从我们的伪代码可以看出所谓的stack unwinding其实就是callstack.pop()</p>
+</blockquote>
+<p>上面所有的就是异常传播，也没什么大不了的。</p>
+<h1 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h1><p>我们已经知道了异常传播的方式，接下来，我们就需要对异常进行相应的处理了。那应该怎样处理异常呢？</p>
+<p>我们先看一个例子:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  b();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">b</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  c();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">c</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;an error&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">a();</span><br></pre></td></tr></table></figure>
+
+<p>我们在chrome控制台中执行上面代码，会得到如下输出:<br><img src="http://img.stallezhou.cn/blog/exception_1.jpg"></p>
+<p>我们可以清楚地看到函数的调用关系。即错误发生在 c 中发生的，而 c 是 b 调用的，b 是 a 调用的。这个函数调用栈是为了方便开发者定位问题而存在的。</p>
+<p>上面的代码，我们并没有 catch 错误，因此上面才会有 <code>「uncaught Error」</code>。</p>
+<p>那么如果我们 catch 会发生什么变化呢？catch 会对结果产生什么样的影响？在 a、b、c 中 catch 的效果是一样的吗？</p>
+<p>我们分别看下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  b();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">b</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  c();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">c</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;an error&quot;</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">a();</span><br></pre></td></tr></table></figure>
+
+<p>我们将上面的代码放到 chrome 中执行，会在控制台显示如下输出：</p>
+<p><img src="http://img.stallezhou.cn/blog/exception_2.jpg"></p>
+<p>可以看到，此时已经没有「uncaught Error」了，仅仅在控制台显示了标准输出，而非错误输出。然而更重要的是，如果我们没有 catch，后面的同步代码将不会继续执行。</p>
+<p>比如在 c 的 throw 下面增加一行代码，这行代码是无法被执行的，<strong>无论这个错误有没有被捕获</strong>。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">c</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;an error&quot;</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;will never run&quot;</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们将 catch 移动到 b 中试试看。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  b();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">b</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    c();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">c</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;an error&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">a();</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，和上面在 c 中捕获没有什么本质不同，其实放到 a 中捕获也是一样，这里不再贴代码了，感兴趣的自己试下。</p>
+<p>既然处于函数调用栈顶部的函数报错，其函数调用栈下方的任意代码都可以进行捕获，并且效果没有本质不同，那么问题来了，我们到底应该在哪里进行错误处理呢？</p>
+<p>答案是责任链模式。我们先来简单介绍一下责任链模式。</p>
+<p>假如Tony要请假,公司请假制度如下:</p>
+<ul>
+<li>如果请假天数小于等于 1 天，则主管同意即可；</li>
+<li>如果请假天数大于 1 天，但是小于等于 3 天，则需要 CTO 同意；</li>
+<li>如果请假天数大于 3 天，则需要老板同意。</li>
+</ul>
+<p><img src="http://img.stallezhou.cn/blog/exception_3.svg"></p>
+<p>这就是一个典型的责任链模式。谁有责任干什么事情是确定的，不要做自己能力范围之外的事情。比如主管不要去同意大于一天的审核。</p>
+<p>举个例子，假设我们的应用有三个异常处理类，它们分别是：用户输入错误、网络错误和类型错误。如下代码，当代码执行的时候会报错一个用户输入异常。这个异常没有被 C 捕获，会 unwind stack 到 b，而 b 中 catch 到这个错误之后，通过查看 code 值判断其可以被处理，于是打印 I can handle this。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    b();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="keyword">if</span> (err.code === <span class="string">&quot;NETWORK_ERROR&quot;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">&quot;I can handle this&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// can&#x27;t handle, pass it down</span></span><br><span class="line">    <span class="keyword">throw</span> err;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">b</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    c();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="keyword">if</span> (err.code === <span class="string">&quot;INPUT_ERROR&quot;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">&quot;I can handle this&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// can&#x27;t handle, pass it down</span></span><br><span class="line">    <span class="keyword">throw</span> err;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">c</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(&#123;</span><br><span class="line">    code: <span class="string">&quot;INPUT_ERROR&quot;</span>,</span><br><span class="line">    message: <span class="string">&quot;an error&quot;</span>,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">a();</span><br></pre></td></tr></table></figure>
+<p>而如果 c 中抛出识别的异常，比如网络异常，那么 b 是无法处理的，虽然 b catch 住了，但是由于你无法处理，因此一个好的做法是继续抛出异常，而不是<code>吞没</code>异常。不要畏惧错误，抛出它。<code>只有没被捕获的异常才是可怕的</code> ，如果一个错误可以被捕获并得到正确处理，它就不可怕。比如:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    b();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="keyword">if</span> (err.code === <span class="string">&quot;NETWORK_ERROR&quot;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">&quot;I can handle this&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// can&#x27;t handle, pass it down</span></span><br><span class="line">    <span class="keyword">throw</span> err;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">b</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    c();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="keyword">if</span> (err.code === <span class="string">&quot;INPUT_ERROR&quot;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">&quot;I can handle this&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">c</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(&#123;</span><br><span class="line">    code: <span class="string">&quot;NETWORK_ERROR&quot;</span>,</span><br><span class="line">    message: <span class="string">&quot;an error&quot;</span>,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">a();</span><br></pre></td></tr></table></figure>
+<p>如上代码不会有任何异常被抛出，它被完全吞没了，这对我们调试问题简直是灾难。因此切记 <strong>「不要吞没你不能处理的异常」</strong>。正确的做法应该是上面讲的 <strong>「只捕获你可以处理的异常，将你不能处理的异常抛出来」</strong>，这就是责任链模式的典型应用。</p>
+<p>这只是一个简单的例子，就足以绕半天。实际业务肯定比这个复杂多得多。因此异常处理绝对不是一件容易的事。</p>
+<p>如果说谁来处理是一件困难的事情，那么在异步中决定谁来处理异常就是难上加难，我们来看下。</p>
+<h1 id="同步与异步"><a href="#同步与异步" class="headerlink" title="同步与异步"></a>同步与异步</h1><p>同步异步一直是前端难以跨域的坎，对于异常处理也是一样。以 NodeJS 中用的比较多的 <strong>「读取文件」API</strong> 为例。它有两个版本，一个是异步，一个是同步。同步读取仅仅应该被用在没了这个文件无法进行下去的时候，比如读取一个配置文件，而不应该再比如浏览器中读取用户磁盘上的一张图片等，这样会造成主线程阻塞，导致浏览器卡死。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 异步读取文件</span></span><br><span class="line">fs.readFileSync();</span><br><span class="line"><span class="comment">// 同步读取文件</span></span><br><span class="line">fs.readFile();</span><br></pre></td></tr></table></figure>
+
+<p>当我们试图 <strong>「同步」</strong> 读取一个不存在的文件的时候，会抛出以下异常:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">fs.readFileSync(<span class="string">&#x27;something-not-exist.txt&#x27;</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;前端随手记&#x27;</span>);</span><br><span class="line">Thrown:</span><br><span class="line"><span class="built_in">Error</span>: ENOENT: no such file or directory, open <span class="string">&#x27;something-not-exist.txt&#x27;</span></span><br><span class="line">    at <span class="built_in">Object</span>.openSync (fs.js:<span class="number">446</span>:<span class="number">3</span>)</span><br><span class="line">    at <span class="built_in">Object</span>.readFileSync (fs.js:<span class="number">348</span>:<span class="number">35</span>) &#123;</span><br><span class="line">  errno: -<span class="number">2</span>,</span><br><span class="line">  syscall: <span class="string">&#x27;open&#x27;</span>,</span><br><span class="line">  code: <span class="string">&#x27;ENOENT&#x27;</span>,</span><br><span class="line">  path: <span class="string">&#x27;something-not-exist.txt&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>并且 <strong>前端随手记</strong>是不会被打印出来的，这个比较好理解，我们上面已经解释过了。<br>而如果以异步的方式：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">fs.readFile(<span class="string">&#x27;something-not-exist.txt&#x27;</span>, <span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;<span class="keyword">if</span>(err) &#123;<span class="keyword">throw</span> err&#125;&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;前端随手记&#x27;</span>)</span><br><span class="line">lucifer</span><br><span class="line"><span class="literal">undefined</span></span><br><span class="line">Thrown:</span><br><span class="line">[<span class="built_in">Error</span>: ENOENT: no such file or directory, open <span class="string">&#x27;something-not-exist.txt&#x27;</span>] &#123;</span><br><span class="line">  errno: -<span class="number">2</span>,</span><br><span class="line">  code: <span class="string">&#x27;ENOENT&#x27;</span>,</span><br><span class="line">  syscall: <span class="string">&#x27;open&#x27;</span>,</span><br><span class="line">  path: <span class="string">&#x27;something-not-exist.txt&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>前端随手记</strong>是会被打印出来的。<br>其本质在于 <strong>fs.readFile</strong> 已经调用成功，并从函数调用栈返回并执行到下一行打印语句。因此错误发生的时候，调用栈是空的，这一点可以从上面的错误堆栈信息中看出来。</p>
+<p>而 try catch 的作用仅仅是捕获当前调用栈的错误，因此异步的错误是无法捕获的，比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  fs.readFile(<span class="string">&quot;something-not-exist.txt&quot;</span>, <span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="keyword">throw</span> err;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;catching an error&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的 <strong>catching an error</strong> 不会被打印，因为错误抛出的时候，调用栈中不包含这个 catch 语句，而仅仅在执行 <strong>fs.readFile</strong> 的时候才会。</p>
+<p>如果我们换成同步读取文件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  fs.readFileSync(<span class="string">&quot;something-not-exist.txt&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;catching an error&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码会打印 <strong>catching an error</strong>，因为读取文件被同步发起，文件返回之前线程会被挂起，当线程恢复执行的时候，<strong>fs.readFileSync</strong> 仍然在函数调用栈中，因此 <strong>fs.readFileSync</strong> 产生的异常会冒泡到 catch 语句中。**<br>简单来说，<code>「异步产生的错误不能用 try catch 捕获，而要使用回调捕获」</code>。<br>如果你非要用 <strong>try catch</strong> 来捕获，则可以使用 <code>async await</code> 来包装异步语句，将异步语法转换成同步语法的形式，但这个异步语句必须是一个 <code>Promise</code>类型才能使用 <code>async await</code> 包装。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">rejectIn = <span class="function">(<span class="params">ms</span>) =&gt;</span></span><br><span class="line">  <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">_, r</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      r(<span class="number">1</span>);</span><br><span class="line">    &#125;, ms);</span><br><span class="line">  &#125;);</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">t</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">await</span> rejectIn(<span class="number">0</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;catching an error&quot;</span>, err);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">t();</span><br></pre></td></tr></table></figure>
+<p>而如果我们使用 babel 转义下，会发现 try catch 不见了，变成了 switch case语句。这就是 try catch 可以捕获异常异常的原因，仅此而已。</p>
+<p><img src="http://img.stallezhou.cn/blog/exception_4.png"></p>
+<blockquote>
+<p>虽然浏览器并不像 babel 转义这般实现，但是至少我们明白了一点，目前的 try catch 的作用机制是无法捕获异步异常的。</p>
+</blockquote>
+<p>异步的错误处理推荐使用容器包装，比如 Promise。然后使用 catch 进行处理。实际上 Promise 的 catch 和 try catch 的 catch 有很多相似的地方，大家可以类比过去。</p>
+<p>和同步处理一样，很多原则都是通用的。比如异步也不要去吞没异常。下面的代码是不好的，因为它吞没了 <strong>「它不能处理的」</strong>异常。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.reject(<span class="number">1</span>)</span><br><span class="line">p.catch(<span class="function">() =&gt;</span> &#123;&#125;)</span><br></pre></td></tr></table></figure>
+<p>更合适的做法应该类似这种：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.reject(<span class="number">1</span>)</span><br><span class="line">p.catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span>(err === <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">&#x27;I can handle this&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">throw</span> err</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="能否彻底消除运行时异常？"><a href="#能否彻底消除运行时异常？" class="headerlink" title="能否彻底消除运行时异常？"></a>能否彻底消除运行时异常？</h1><p>我觉得大家目前都是 <strong>过分依赖运行时，而严重忽略编译时</strong>,只会或者只愿意改运行时的异常，不太愿意处理编译时的异常。我见过很多程序，如果不运行，根本不知道程序是怎么走的，每个变量的 shape 是什么，怪不得处处都可以看到打印语句。我相信你一定对此感同身受。也许你是写出这种代码的人，也许你是帮别人擦屁股的人。为什么会这样？就是因为大家过分依赖运行时。<code>TypeScript</code> 的出现很大程度上改变了这一点，前提是你用的是 <code>TypeScript</code> 而不是 <code>AnyScript</code>。其实 eslint 以及 stylint 对此也有贡献，毕竟他们是静态分析工具。<br>我强烈建议将异常保留在编译时，而不是运行时。不妨极端一点来看：加入所有的异常都在编译时发生，而一定不会在运行时发生。那么我们是不是就可以 <strong>「信心满满」</strong>地对应用进行重构？</p>
+<p>幸运的事，我们能够做到。只不过如果当前语言做不到的话，则需要对现有的语言体系进行改造。这种改造成本真的很大，不仅仅是 API，编程模型也发生了翻天覆地的变化，不然函数时也不会这么多年都没有得到普及。</p>
+<h1 id="运行时异常可以恢复吗？"><a href="#运行时异常可以恢复吗？" class="headerlink" title="运行时异常可以恢复吗？"></a>运行时异常可以恢复吗？</h1><p>最后要讨论的一个主题是运行时异常是否可以恢复。先来解释一下，什么是运行时异常的恢复。还是用上面的例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;start&quot;</span>);</span><br><span class="line">  <span class="keyword">throw</span> <span class="number">1</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;end&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure>
+<p>我们知道无论如何都无法打印 end，即使你 catch 了也无济于事。</p>
+<p>如果我想让它可以打印呢？我想让程序面对异常可以自己 recover 怎么办？我已经捕获这个错误，并且我确信我可以处理，让流程继续走下去，如果有能力做到这个，这个就是 <strong>「运行时异常恢复」</strong>。</p>
+<p>遗憾地告诉你，目前没有任何一个引擎可以做到这一点。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本片文章中我们学习了异常以及异常传播、处理等。但是目前我们需要走的路还很长。望各位同学认真学习，不负韶华。</p>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Newer Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/18/为什么学习TypeScript/" title="为什么要学TypeScript">为什么要学TypeScript</a></h2>
+                <p class="excerpt">
+                
+                为什么要学TypeScript前言从过去互联网的发展上来看，JavaScript已经在浏览器上编写网页和应用程序的脚本有着举足轻重轻重的作用。但是能否通过JavaScript去构建或者架构一些大型的复杂的web应用呢？答案是可以但没肯定那么容易，于是，我们迎来了另外一个解决方案，TypeScript
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2020-12-17T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-18</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2020/12/18/为什么学习TypeScript/">继续阅读</a></div>
+                           
+            </div>
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2020/12/17/this/" title="JavaScript深入之this绑定全面解析">JavaScript深入之this绑定全面解析</a></h2>
+                <p class="excerpt">
+                
+                前言在两年的前端生涯中，我发现this指向是前端人广为讨论的一个对象，因此this也成为了一个面试热门话题。今天，我们通过本篇文章来全面地看看this的绑定问题。
+this的5种绑定规则
+默认绑定(严格/非严格模式)
+隐式绑定
+显式绑定
+new绑定
+箭头函数绑定
+
+this的调用位置调用位置就是函数
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2020-12-16T16:00:00.000Z" class="post-list__meta--date date"
+  >2020-12-17</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2020/12/17/this/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>
