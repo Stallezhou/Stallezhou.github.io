@@ -2,7 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://www.stallezhou.cn/2020/12/18/exception/</loc>
+    <loc>http://www.stallezhou.cn/2021/01/05/sort/</loc>
+    
+    <lastmod>2021-01-05</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.stallezhou.cn/2021/01/04/exception/</loc>
     
     <lastmod>2021-01-04</lastmod>
     
@@ -102,7 +109,7 @@
 
   <url>
     <loc>http://www.stallezhou.cn/</loc>
-    <lastmod>2021-01-04</lastmod>
+    <lastmod>2021-01-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -110,7 +117,7 @@
   
   <url>
     <loc>http://www.stallezhou.cn/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/</loc>
-    <lastmod>2021-01-04</lastmod>
+    <lastmod>2021-01-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
