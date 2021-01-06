@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>必须要知道的跨域 | 周龙的博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前端随手记">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="必须要知道的跨域 | 周龙的博客">
+    <meta name="twitter:description" content="前端随手记">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="必须要知道的跨域 | 周龙的博客">
+    <meta property="og:description" content="前端随手记">
+
+    
+    <meta name="author" content="stallezhou">
+    
+    
+<link rel="stylesheet" href="/css/vno.css">
+
+    
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+
+    
+    <link rel="icon" href="/images/avatar-small.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+
+    <link rel="canonical" href="http://www.stallezhou.cn/2021/01/06/%E8%B7%A8%E5%9F%9F/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+    
+<script src="/js/main.js"></script>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 周龙的博客 的主页"><img src="/images/avatar.jpg" width="80" alt="周龙的博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 周龙的博客">周龙的博客</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">前端随手记</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/stallezhou" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2021-01-05T16:00:00.000Z" class="post-list__meta--date date"
+  >2021-01-06</time
+>
+ &#8226; <span class="post-meta__tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">必须要知道的跨域</h1>
+  </header>
+
+  <section class="post">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在前端开发中，跨域这个问题就像一张狗屁膏药一样黏在我们身上。无论是在工作中还是面试中，跨域这个问题一定是无法避免的。那么，接下来就让我们来看看这个狗皮膏药内部的原理。</p>
+<h2 id="为什么会出现跨域？"><a href="#为什么会出现跨域？" class="headerlink" title="为什么会出现跨域？"></a>为什么会出现跨域？</h2><p>相信大家对于这个问题都有一个统一的回答，<code>同源策略</code>。可是，我相信绝大多数人都不怎么了解为什么会有<code>同源策略</code>？我们都知道，同源策略是浏览器自己主动处理的，浏览器对于为什么要使用同源策略有一个统一的口径:<strong>同源策略限制了从同一个源加载的文档或者脚本如何与来自另一个源的资源进行交互。这是一个用于隔离潜在恶意文件的重要安全机制</strong></p>
+<h2 id="什么是不同源？"><a href="#什么是不同源？" class="headerlink" title="什么是不同源？"></a>什么是不同源？</h2><p>上面我们已经解释了同源策略的含义，那怎样算是不同源呢？对于不同源，浏览器有自己的解释。任意的两个资源:<strong>只要协议、域名和端口。这三者任一不同，就算是跨域</strong>。在上面我们还提到了限制，浏览器具体有哪些限制，如下:</p>
+<ul>
+<li>cookie、localStorage 和 indexDB 无法读取</li>
+<li>DOM 无法获得</li>
+<li>Ajax 请求发送成功，但是响应会被浏览器拦截</li>
+</ul>
+<blockquote>
+<p>注意:跨域的请求会发送，而且会请求成功，只是响应会被浏览器拦截</p>
+</blockquote>
+<h2 id="跨域通信的方式"><a href="#跨域通信的方式" class="headerlink" title="跨域通信的方式"></a>跨域通信的方式</h2><h3 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h3><blockquote>
+<p>通过 script 标签的异步加载实现，利用 script 标签不受同源策略的限制，天然可以跨域的特性</p>
+</blockquote>
+<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> script = <span class="built_in">document</span>.createElement(<span class="string">&#x27;script&#x27;</span>)</span><br><span class="line">script.type = <span class="string">&#x27;text/javascript&#x27;</span></span><br><span class="line">script.src = <span class="string">&#x27;https://www.mock-api.com/?callback=jsonp&#x27;</span> <span class="comment">// 接口地址</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.head.appendChild(script)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">jsonp</span>(<span class="params">...res</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h3><blockquote>
+<p>url # 后面的内容就叫 Hash。Hash 改变，页面不会刷新</p>
+</blockquote>
+<h4 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在 A 中伪代码</span></span><br><span class="line"><span class="keyword">const</span> B = <span class="built_in">document</span>.getElementsByTagName(<span class="string">&#x27;iframe&#x27;</span>)</span><br><span class="line">B.src = B.src + <span class="string">&#x27;#&#x27;</span> + <span class="string">&#x27;data&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 B 中的伪代码</span></span><br><span class="line"><span class="built_in">window</span>.onhashchange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; data &#125; = <span class="built_in">window</span>.location</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="postMessage"><a href="#postMessage" class="headerlink" title="postMessage"></a>postMessage</h3><blockquote>
+<p>H5 新增的 postMessage() 方法，可以用来做跨域通信</p>
+</blockquote>
+<h4 id="实现-2"><a href="#实现-2" class="headerlink" title="实现"></a>实现</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在 A 窗口</span></span><br><span class="line"><span class="keyword">const</span> url = <span class="string">&#x27;...&#x27;</span></span><br><span class="line"><span class="keyword">const</span> windowB = <span class="built_in">window</span>.open(url)</span><br><span class="line">windowB.postMessage(<span class="string">&#x27;data&#x27;</span>, url)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 B 窗口</span></span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">&#x27;message&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(event.origin) <span class="comment">// A 窗口 url</span></span><br><span class="line">  <span class="built_in">console</span>.log(event.source) <span class="comment">// A 窗口 window 对象</span></span><br><span class="line">  <span class="built_in">console</span>.log(event.data) <span class="comment">// A 窗口传过来的数据</span></span><br><span class="line">&#125;, <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket"></a>WebSocket</h3><blockquote>
+<p>WebSocket protocol 是 HTML5 一种新的协议，它实现了浏览器与服务器全双工通信，同时允许跨域通讯，是 server push 技术的一种很好的实现</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ws = <span class="keyword">new</span> WebSocket(<span class="string">&#x27;wss://echo.websocket.org&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ws.onopen = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Connection open ...&#x27;</span>)</span><br><span class="line">  ws.send(<span class="string">&#x27;Hello WebSockets&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ws.onmessage = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Received Message: &#x27;</span>, event.data)</span><br><span class="line">	ws.close()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ws.onclose = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Connection closed&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="CORS"><a href="#CORS" class="headerlink" title="CORS"></a>CORS</h3><blockquote>
+<p>整个 CORS 通信过程都是浏览器自动完成，不需要用户参与。对于开发者来说，CORS 通信与同源的 AJAX 通信没有差别，代码完全一样。浏览器一旦发现 AJAX 请求跨域，就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。因此，实现 CORS 通信的关键是服务器，只要服务器实现了 CORS 接口，就可以跨域通信</p>
+</blockquote>
+<p><strong>注意:CORS 需要浏览器和服务端同时支持。IE 8 和 9 需要通过 XSDomainRequest 来实现。</strong></p>
+<p>在通过CORS进行跨域请求时，会在发送请求的时候出现两种情况，分别为<code>简单请求</code>和<code>复杂请求</code>。</p>
+<h4 id="简单请求"><a href="#简单请求" class="headerlink" title="简单请求"></a>简单请求</h4><p>只要同时满足一下两大条件，就属于简单请求:</p>
+<ol>
+<li>请求方法为Get、Head、Post之一</li>
+<li>Content-Type的值为text/plain、multipart/form-data、application/x-www-form-urlencoded。</li>
+</ol>
+<p>在简单请求中，请求中的任意 XMLHttpRequestUpload 对象均没有注册任何事件监听器；XMLHttpRequestUpload 对象可以使用 XMLHttpRequest.upload 属性访问。</p>
+<h4 id="复杂请求"><a href="#复杂请求" class="headerlink" title="复杂请求"></a>复杂请求</h4><p>不符合简单请求条件的就是复杂请求。复杂请求的 CORS 请求，会在正式通信之前，增加一次 HTTP 查询请求，称为 预检请求 ，该请求的方法是 Option，通过该请求来查询服务端是否允许跨域请求。</p>
+<h3 id="domain"><a href="#domain" class="headerlink" title="domain"></a>domain</h3><p>我们可以使用document.domain来解决跨域。但是这种方式只适用于主域名相同，但子域名不相同的iframe跨域。比如主域名是<a href="http://cross.com:9099,子域名是http://child.cross.com:9099。在这种情况下，给两个页面指定一下document.domain即document.domain">http://cross.com:9099,子域名是http://child.cross.com:9099。在这种情况下，给两个页面指定一下document.domain即document.domain</a> = cross.com就可以访问各自的window对象了</p>
+<h2 id="服务端实现CORS"><a href="#服务端实现CORS" class="headerlink" title="服务端实现CORS"></a>服务端实现CORS</h2><p>由于在前端开发中，接触最多的是js。我们仅以node和nginx为例进行展示。</p>
+<h3 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 以 express 为例</span></span><br><span class="line">app.all(<span class="string">&#x27;*&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res, next</span>) </span>&#123;</span><br><span class="line">  res.header(<span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>, <span class="string">&#x27;*&#x27;</span>)</span><br><span class="line">  res.header(<span class="string">&#x27;Access-Control-Allow-Headers&#x27;</span>, <span class="string">&#x27;X-Requested-With&#x27;</span>)</span><br><span class="line">  res.header(<span class="string">&#x27;Access-Control-Allow-Methods&#x27;</span>, <span class="string">&#x27;PUT,POST,GET,DELETE,OPTIONS&#x27;</span>)</span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  add_header Access-Control-Allow-Credentials <span class="literal">true</span>;</span><br><span class="line">  add_header Access-Control-Allow-Origin $http_origin;</span><br><span class="line">  </span><br><span class="line">  location /file &#123;</span><br><span class="line">    <span class="keyword">if</span>($request_method = <span class="string">&#x27;OPTIONS&#x27;</span>) &#123;</span><br><span class="line">      add_header Access-Control-Allow-Origin $http_origin;</span><br><span class="line">      add_header Access-Control-Allow-Methods $http_access_control_request_methods;</span><br><span class="line">      add_header Access-Control-Allow-Credentials <span class="literal">true</span>;</span><br><span class="line">      add_header Access-Control-Allow-Headers $http_access_control_request_headers;</span><br><span class="line">      add_header Access-Control-Max-Age <span class="number">1728000</span>;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">204</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="没有同源的危害"><a href="#没有同源的危害" class="headerlink" title="没有同源的危害"></a>没有同源的危害</h2><p>上面我们讲了什么是同源策略以及如何处理跨域的问题，接下来我们看看如果没有同源的危险情况。</p>
+<h3 id="没有同源的接口请求"><a href="#没有同源的接口请求" class="headerlink" title="没有同源的接口请求"></a>没有同源的接口请求</h3><p>我们都知道，当我们登录成功时，后端会在响应头增加一个Set-Cookie字段，然后下次再请求时浏览器会自动把Cookie附加在HTTP请求头的Cookie字段中，服务端就知道你已经登录过了。那么，我们来看一个场景:</p>
+<ol>
+<li>你想买点东西，于是你打开了<a target="_blank" rel="noopener" href="http://www.taobao.cn,然后登录成功,开始挑选物品/">www.taobao.cn，然后登录成功，开始挑选物品</a></li>
+<li>你在挑选物品的过程中，无意中打开了一个通知，里面有另一个链接让你点击，你打开了另一个链接</li>
+<li>当你正在浏览另一个链接的时候，由于没有同源策略限制，它向<a target="_blank" rel="noopener" href="http://www.taobao.cn发起了请求,而且携带了你的cookie,可以开始操作你的账号为所欲为./">www.taobao.cn发起了请求，而且携带了你的cookie，可以开始操作你的账号为所欲为。</a></li>
+</ol>
+<p>这里还好是taobao账号，如果你登录的是你的银行账号，后果难以想象。这就是著名的CSRF攻击。看了这波CSRF攻击我在想，即使有了同源策略限制，但cookie是明文的，还不是一样能拿下来。于是我看了一些cookie相关的文章，，知道了服务端可以设置httpOnly，使得前端无法操作cookie，如果没有这样的设置，像XSS攻击就可以去获取到cookie,设置secure，则保证在https的加密通信中传输以防截获。而且还有Samsite属性可以让我们更放心的使用Cookie。</p>
+<h3 id="没有同源的Dom查询"><a href="#没有同源的Dom查询" class="headerlink" title="没有同源的Dom查询"></a>没有同源的Dom查询</h3><p>我们先来看一个场景:</p>
+<ol>
+<li>有一天你刚睡醒，收到一封邮件，说是你的银行账号有风险，赶紧点进<a target="_blank" rel="noopener" href="http://www.yinghang.com改密码.你吓尿了,赶紧点进去,还是熟悉的银行登录界面,你果断输入你的账号密码,登录进去看看钱有没有少了./">www.yinghang.com改密码。你吓尿了，赶紧点进去，还是熟悉的银行登录界面，你果断输入你的账号密码，登录进去看看钱有没有少了。</a></li>
+<li>睡眼朦胧的你没看清楚，平时访问的银行网站是<a href="http://www.yinhang.com，而现在访问的是www.yinghang.com，这个钓鱼网站做了什么呢？">www.yinhang.com，而现在访问的是www.yinghang.com，这个钓鱼网站做了什么呢？</a><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// html</span></span><br><span class="line">&lt;iframe name=<span class="string">&#x27;yinhang&#x27;</span> src=<span class="string">&#x27;www.yinhang.com&#x27;</span>&gt;&lt;/iframe&gt;</span><br><span class="line"><span class="comment">//js</span></span><br><span class="line"><span class="keyword">const</span> iframe = <span class="built_in">window</span>.frames[<span class="string">&#x27;yinhang&#x27;</span>]</span><br><span class="line"><span class="keyword">const</span> node = iframe.document.getElementById(<span class="string">&#x27;你输入账号的input&#x27;</span>)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">`我拿到了这个<span class="subst">$&#123;node&#125;</span>,害怕拿不到你的密码？`</span>)</span><br></pre></td></tr></table></figure>
+由此我们知道，同源策略确实能规避一些危险，不是说有了同源策略就安全，只是说同源策略是一种浏览器最基本的安全机制，毕竟能提高一点攻击的成本。其实没有刺不穿的盾，只是攻击的成本和攻击成功后获得的利益成不成正比。</li>
+</ol>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本次我们详细了解了跨域的问题以及相关的解决方案，希望以后再有人问各位跨域的问题。各位同学可以嘴角微微上扬，然后回答的淋漓尽致。</p>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2021/01/05/sort/" title="排序算法详解">排序算法详解</a></h2>
+                <p class="excerpt">
+                
+                前言在我们日常的开发中，排序是一个很普遍而且很常见的问题。今天，我们就来看一下各种排序算法的差异以及比较好的写法。
+冒泡排序
+冒泡排序:它重复地走访过要排序的元素列，依次比较两个相邻的元素，如果顺序（如从大到小、首字母从Z到A）错误就把他们交换过来。走访元素的工作是重复地进行直到没有相邻元素需要交换
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2021-01-04T16:00:00.000Z" class="post-list__meta--date date"
+  >2021-01-05</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2021/01/05/sort/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>
