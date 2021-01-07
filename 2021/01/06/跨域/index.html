@@ -188,7 +188,9 @@
 </ol>
 <p>在简单请求中，请求中的任意 XMLHttpRequestUpload 对象均没有注册任何事件监听器；XMLHttpRequestUpload 对象可以使用 XMLHttpRequest.upload 属性访问。</p>
 <h4 id="复杂请求"><a href="#复杂请求" class="headerlink" title="复杂请求"></a>复杂请求</h4><p>不符合简单请求条件的就是复杂请求。复杂请求的 CORS 请求，会在正式通信之前，增加一次 HTTP 查询请求，称为 预检请求 ，该请求的方法是 Option，通过该请求来查询服务端是否允许跨域请求。</p>
-<h3 id="domain"><a href="#domain" class="headerlink" title="domain"></a>domain</h3><p>我们可以使用document.domain来解决跨域。但是这种方式只适用于主域名相同，但子域名不相同的iframe跨域。比如主域名是<a href="http://cross.com:9099,子域名是http://child.cross.com:9099。在这种情况下，给两个页面指定一下document.domain即document.domain">http://cross.com:9099,子域名是http://child.cross.com:9099。在这种情况下，给两个页面指定一下document.domain即document.domain</a> = cross.com就可以访问各自的window对象了</p>
+<h3 id="Domain"><a href="#Domain" class="headerlink" title="Domain"></a>Domain</h3><blockquote>
+<p>我们可以使用document.domain来解决跨域。但是这种方式只适用于主域名相同，但子域名不相同的iframe跨域。比如主域名是<a href="http://cross.com:9099,子域名是http://child.cross.com:9099。在这种情况下，给两个页面指定一下document.domain即document.domain">http://cross.com:9099,子域名是http://child.cross.com:9099。在这种情况下，给两个页面指定一下document.domain即document.domain</a> = cross.com就可以访问各自的window对象了</p>
+</blockquote>
 <h2 id="服务端实现CORS"><a href="#服务端实现CORS" class="headerlink" title="服务端实现CORS"></a>服务端实现CORS</h2><p>由于在前端开发中，接触最多的是js。我们仅以node和nginx为例进行展示。</p>
 <h3 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 以 express 为例</span></span><br><span class="line">app.all(<span class="string">&#x27;*&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res, next</span>) </span>&#123;</span><br><span class="line">  res.header(<span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>, <span class="string">&#x27;*&#x27;</span>)</span><br><span class="line">  res.header(<span class="string">&#x27;Access-Control-Allow-Headers&#x27;</span>, <span class="string">&#x27;X-Requested-With&#x27;</span>)</span><br><span class="line">  res.header(<span class="string">&#x27;Access-Control-Allow-Methods&#x27;</span>, <span class="string">&#x27;PUT,POST,GET,DELETE,OPTIONS&#x27;</span>)</span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
@@ -217,6 +219,23 @@
 <section class="read-more">
            
     
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Newer Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2021/01/07/event_loop/" title="Event Loop">Event Loop</a></h2>
+                <p class="excerpt">
+                
+                前言相信很多同学无论是在工作中还是在生活中都遇到过一个问题，那就是setTimeout和Promise到底谁先执行，谁后执行。明明setTimeout写在前面,为啥在 Promise后执行。这其实有关于Event Loop相关的知识，在这篇文章中，我们会详细地来了解Event Loop相关知识，知道
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2021-01-06T16:00:00.000Z" class="post-list__meta--date date"
+  >2021-01-07</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2021/01/07/event_loop/">继续阅读</a></div>
+                           
+            </div>
         
         
                

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="z">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>Event Loop | 周龙的博客</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="前端随手记">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Event Loop | 周龙的博客">
+    <meta name="twitter:description" content="前端随手记">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Event Loop | 周龙的博客">
+    <meta property="og:description" content="前端随手记">
+
+    
+    <meta name="author" content="stallezhou">
+    
+    
+<link rel="stylesheet" href="/css/vno.css">
+
+    
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+
+    
+    <link rel="icon" href="/images/avatar-small.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+
+    <link rel="canonical" href="http://www.stallezhou.cn/2021/01/07/event_loop/"/>
+
+                 
+</head>
+
+<body class="home-template no-js">
+    
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+
+    
+<script src="/js/main.js"></script>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 周龙的博客 的主页"><img src="/images/avatar.jpg" width="80" alt="周龙的博客 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for 周龙的博客">周龙的博客</a></h1>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">前端随手记</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="Visit the blog" class="blog-button">Blog</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/stallezhou" title="GitHub" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div> 
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2021-01-06T16:00:00.000Z" class="post-list__meta--date date"
+  >2021-01-07</time
+>
+ &#8226; <span class="post-meta__tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+ </span>
+      <span class="page-pv">
+       Read <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">Event Loop</h1>
+  </header>
+
+  <section class="post">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信很多同学无论是在工作中还是在生活中都遇到过一个问题，那就是<code>setTimeout</code>和<code>Promise</code>到底谁先执行，谁后执行。明明<code>setTimeout</code>写在前面,为啥在 <code>Promise</code>后执行。这其实有关于Event Loop相关的知识，在这篇文章中，我们会详细地来了解Event Loop相关知识，知道js异步运行代码的原理。</p>
+<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>相信大家在平时的工作中都会听到或者看到一句话，js是<code>单线程</code>执行的，但是你是否有过疑惑，什么是线程？</p>
+<p>提到线程，我们先来看看什么是进程。从本质上来说，两个名词都是<code>CPU工作时间片</code>的一个描述。</p>
+<p>进程描述了CPU在<code>运行指令及加载和保存上下文所需的时间</code>,放在运用上来说就是一个程序。线程是比进程的更小单位，描述了进行一段指令所需的时间。<br>把这些概念拿到浏览器中来说就是，当你打开一个tab页，其实就创建了一个进程，页面进行渲染、js解析执行、HTTP请求都是单独的线程去完成，由此我们可以看出，一个进程中可以有多个线程。当我们在发起一个请求时，就创建了一个线程，请求结束，线程可能就会被销毁。</p>
+<p>前面我们提到了js引擎线程和渲染线程，相信各位同学都知道，在js运行时可能会阻止UI渲染，这说明了这两个线程是<code>互斥</code>的。这其中的原因是因为js可以修改DOM，如果在js执行的时候UI线程还在工作，这就可能导致不安全的渲染UI。这其实也是1个单线程的好处，得益于js是单线程运行的，可以达到节省内存，节约上下文切换时间，没有锁的问题的好处。当然，在平常工作中，前面两点在服务端中更容易体现，对于锁的问题，打个比方:当我读取一个数字15的时候，同时有两个操作对数字进行了加减，这时候结果就出现了错误。解决这个问题也不难，只需要在读取的时候加锁，直到读取完毕之前都不能对其进行写入操作。</p>
+<h2 id="执行栈"><a href="#执行栈" class="headerlink" title="执行栈"></a>执行栈</h2><p>不知道大家有没有发现，当我们F12打开调试控制台时，在最右边有一个函数调用的stack，这个就是一个执行栈。我们可以认为执行栈就是一个存储函数调用的<code>栈结构</code>，遵循先进后出的原则。</p>
+<p><img src="http://img.stallezhou.cn/blog/event_1.gif"></p>
+<p>当我们开始执行js的时候，会先执行一个<code>main</code>函数,然后执行我们的代码。根据FILO(先进后出)的原则,后执行的函数会先弹出栈，在上图中我们可以看到，<code>foo</code>函数后执行，但是它执行完毕后就从栈中弹出了。</p>
+<p>在平时的开发中，大家也可以在报错信息中看到执行栈的痕迹。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;error&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  foo()</span><br><span class="line">&#125;</span><br><span class="line">bar()</span><br></pre></td></tr></table></figure>
+<p><img src="http://img.stallezhou.cn/blog/event_2.png"></p>
+<p>大家可以在上图清晰的看到报错在<code>foo</code>函数，<code>foo</code> 函数又是在 <code>bar</code> 函数中调用的。</p>
+<p>当我们使用递归的时候，因为栈可能存放的函数是有<code>限制</code>的，一旦过多且没有得到释放，就会出现栈溢出的情况。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  bar()</span><br><span class="line">&#125;</span><br><span class="line">bar()</span><br></pre></td></tr></table></figure>
+<p><img src="http://img.stallezhou.cn/blog/event_3.png"></p>
+<h2 id="浏览器中的Event-Loop"><a href="#浏览器中的Event-Loop" class="headerlink" title="浏览器中的Event Loop"></a>浏览器中的Event Loop</h2><p>在前面，我们知道了线程、进程和执行栈，同学们也都知道了当我们执行js代码的时候就是往执行栈中放入函数，那么遇到异步的时候该怎么处理？接下来我们来看看浏览器的处理方法。</p>
+<p>在我们遇到异步代码时，会被<code>挂起</code>并在需要执行的时候加入的Task(有多种task)队列中。一旦执行栈为空，Event Loop就会从Task队列中拿出需要执行的代码放入执行栈中执行，所以，从本质上说，js的异步还是同步行为。</p>
+<p><img src="http://img.stallezhou.cn/blog/event_4.png"></p>
+<p>在浏览器中，不同的任务会有不同的Task队列，不同的任务可以分为<code>微任务(microtask)</code>和<code>宏任务(macrotask)</code>。在ES6中，microtask又被称为<code>jobs</code>,macrotask又被称为 task。下面我们来看看一段代码的执行顺序:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;script start&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">await</span> async2()</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;async1 end&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;async2 end&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line">async1()</span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;setTimeout&#x27;</span>)</span><br><span class="line">&#125;, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Promise&#x27;</span>)</span><br><span class="line">  resolve()</span><br><span class="line">&#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;promise1&#x27;</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;promise2&#x27;</span>)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;script end&#x27;</span>)</span><br><span class="line"><span class="comment">// script start =&gt; async2 end =&gt; Promise =&gt; script end =&gt; promise1 =&gt; promise2 =&gt; async1 end =&gt; setTimeout</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：在新的浏览器中不是如上打印的，因为await变快了，具体情况后续会解释。</p>
+</blockquote>
+<p>首先我们来看一下 <code>async</code> 和 <code>await</code>的执行顺序，当我们调用 <code>async1</code> 函数时 ，会马上输出 <code>async2 end</code>，并且函数会返回一个 <code>Promise</code>,接下来在遇到 <code>await</code> 的时候会让出线程开始执行 <code>async1</code>外的代码，所以我们可以把 <code>await</code> 看出是 <strong>让出线程的标志</strong>。</p>
+<p>然后当同步代码全部执行完毕以后，就会去执行所有的异步代码，那么又会回到 <code>await</code> 的位置执行返回的 <code>Promise</code> 的 <code>resolve</code> 函数，这又会把 <code>resolve</code> 丢到微任务队列中，接下来去执行 <code>then</code> 中的回调，当两个 <code>then</code> 中的回调全部执行完毕以后，又会回到 <code>await</code> 的位置处理返回值，这时候你可以看成是 <code>Promise.resolve(返回值).then()</code>，然后 <code>await</code> 后的代码全部被包裹进了 <code>then</code> 的回调中，所以 <code>console.log(&#39;async1 end&#39;)</code> 会优先执行于 <code>setTimeout</code>。</p>
+<p>如果你觉得上面这段解释还是有点绕，那么我把 <code>async</code> 的这两个函数改造成你一定能理解的代码:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;async2 end&#x27;</span>)</span><br><span class="line">  <span class="comment">// Promise.resolve() 将代码插入微任务队列尾部</span></span><br><span class="line">  <span class="comment">// resolve 再次插入微任务队列尾部</span></span><br><span class="line">  resolve(<span class="built_in">Promise</span>.resolve())</span><br><span class="line">&#125;).then(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;async1 end&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>也就是说，如果 <code>await</code> 后面跟着 <code>Promise</code> 的话，<code>async1 end</code> 需要等待三个 <code>tick</code> 才能执行到。那么其实这个性能相对来说还是略慢的，所以 V8 团队借鉴了 Node 8 中的一个 Bug，在引擎底层将三次 tick 减少到了二次 tick。但是这种做法其实是违法了规范的，当然规范也是可以更改的，这是 V8 团队的一个 <a target="_blank" rel="noopener" href="https://github.com/tc39/ecma262/pull/1250">PR</a>，目前已被同意这种做法。</p>
+<p>所以Event Loop执行的顺序如下所示:</p>
+<ul>
+<li>首先执行同步代码，这属于宏任务</li>
+<li>当执行完所有同步代码后，执行栈为空，查询是否有异步代码需要执行</li>
+<li>执行所有微任务</li>
+<li>当执行完所有微任务后，如有必要会渲染页面</li>
+<li>然后开始下一轮 Event Loop，执行宏任务中的异步代码，也就是 <code>setTimeout</code> 中的回调函数</li>
+</ul>
+<p>所以以上代码虽然 <code>setTimeout</code> 写在 <code>Promise</code> 之前，但是因为 <code>Promise</code> 属于微任务而 <code>setTimeout</code> 属于宏任务，所以会有以上的打印。</p>
+<p>微任务包括 <code>process.nextTick</code> ，<code>promise</code> ，<code>MutationObserver</code>，其中 <code>process.nextTick</code> 为 Node 独有。</p>
+<p>宏任务包括 <code>script</code> ， <code>setTimeout</code> ，<code>setInterval</code> ，<code>setImmediate</code> ，<code>I/O</code> ，<code>UI rendering</code>。</p>
+<p>这里很多人会有个误区，认为微任务快于宏任务，其实是错误的。因为宏任务中包括了 <code>script</code> ，浏览器会先执行一个宏任务，接下来有异步代码的话才会先执行微任务。</p>
+<h2 id="Node中的Event-Loop"><a href="#Node中的Event-Loop" class="headerlink" title="Node中的Event Loop"></a>Node中的Event Loop</h2><p>相信大家刚开始都会有一个误区，node也是js写的，用的是js引擎，根浏览器中的Event loop应该是一样的。其实，Node中的Event Loop和浏览器中的完全不一样，是两个完全不相同的东西。</p>
+<p>Node中的Event Loop分为6个阶段，它们会按照<code>顺序</code>反复执行。每当进入一个阶段的时候，都会从对应的回调队列中取出函数去执行。当队列为空或者执行的回调函数数量达到系统设定的阈值，就会进入下一个阶段。</p>
+<p><img src="http://img.stallezhou.cn/blog/event_5.png"></p>
+<h3 id="timer"><a href="#timer" class="headerlink" title="timer"></a>timer</h3><p>timers阶段会执行 <code>setTimeout</code>和 <code>setInterval</code>回调，并且是poll阶段控制的。<br>同样在node中定时器指定的时间也不是准确时间，只能是<code>尽快</code>执行。</p>
+<h3 id="I-O"><a href="#I-O" class="headerlink" title="I/O"></a>I/O</h3><p>I/O 阶段会处理一些上一轮循环中的<code>少数未执行</code>的 I/O 回调</p>
+<h3 id="idle、prepare"><a href="#idle、prepare" class="headerlink" title="idle、prepare"></a>idle、prepare</h3><p>idle, prepare 阶段内部实现，这里就忽略不讲了。</p>
+<h3 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h3><p>poll 是一个至关重要的阶段，这一阶段中，系统会做两件事情:</p>
+<ol>
+<li>回到 timer 阶段执行回调</li>
+<li>执行 I/O 回调</li>
+</ol>
+<p>并且在进入该阶段时如果没有设定了 timer 的话，会发生以下两件事情:</p>
+<ul>
+<li>如果poll队列不为空，会遍历回调队列同步并同步执行，直到队列为空或者达到系统限制。</li>
+<li>如果poll队列为空,会进行另外两件事<ol>
+<li>如果有 <code>setImmediate</code> 回调需要执行，poll 阶段会停止并且进入到 check 阶段执行回调</li>
+<li>如果没有 <code>setImmediate</code> 回调需要执行，会等待回调被加入到队列中并立即执行回调，这里同样会有个超时时间设置防止一直等待下去</li>
+</ol>
+</li>
+</ul>
+<p>当然设定了 timer 的话且 poll 队列为空，则会判断是否有 timer 超时，如果有的话会回到 timer 阶段执行回调。</p>
+<h3 id="check"><a href="#check" class="headerlink" title="check"></a>check</h3><p>check 阶段执行 <code>setImmediate</code></p>
+<h3 id="close-callbacks"><a href="#close-callbacks" class="headerlink" title="close callbacks"></a>close callbacks</h3><p>close callbacks 阶段执行 close 事件</p>
+<p>好了，我们已经知道了Node中的Event Loop执行顺序，接下来我们通过代码的方式来深入理解这块内容。</p>
+<p>在有些情况下，定时器的顺序是<code>随机</code>的</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;setTimeout&#x27;</span>)</span><br><span class="line">&#125;, <span class="number">0</span>)</span><br><span class="line">setImmediate(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;setImmediate&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>对于以上代码来说，<code>setTimeout</code> 可能执行在前，也可能执行在后</p>
+<ul>
+<li>首先 <code>setTimeout(fn, 0) === setTimeout(fn, 1)</code>，这是由源码决定的</li>
+<li>其次,进入事件循环也是需要成本的，如果在准备时候花费了大于 1ms 的时间，那么在 timer 阶段就会直接执行 setTimeout 回调</li>
+<li>那么如果准备时间花费小于 1ms，那么就是 setImmediate 回调先执行了</li>
+</ul>
+<p>当然，在有些情况下，它们的执行顺序一定是固定的，比如:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>)</span><br><span class="line"></span><br><span class="line">fs.readFile(__filename, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;timeout&#x27;</span>);</span><br><span class="line">    &#125;, <span class="number">0</span>)</span><br><span class="line">    setImmediate(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;immediate&#x27;</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在上述代码中，<code>setImmediate</code> 永远<strong>先执行</strong>。因为两个代码写在 IO 回调中，IO 回调是在 poll 阶段执行，当回调执行完毕后队列为空，发现存在 <code>setImmediate</code> 回调，所以就直接跳转到 check 阶段去执行回调了。</p>
+<p>在上面介绍的欧式macrotask的执行情况，对于microtask来说，它会在以上每个阶段完成前情况microtask队列，下图的Tick就代表了microtask:</p>
+<p><img src="http://img.stallezhou.cn/blog/event_6.png"></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;timer21&#x27;</span>)</span><br><span class="line">&#125;, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;promise1&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>对于以上代码来说，其实和浏览器中的输出是一样的，microtask 永远执行在 macrotask 前面。</p>
+<p>最后我们来讲讲 Node 中的 <code>process.nextTick</code>，这个函数其实是独立于 Event Loop 之外的，它有一个自己的队列，当每个阶段完成后，如果存在 nextTick 队列，就会<strong>清空队列中的所有回调函数</strong>，并且优先于其他 microtask 执行。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line"> <span class="built_in">console</span>.log(<span class="string">&#x27;timer1&#x27;</span>)</span><br><span class="line"></span><br><span class="line"> <span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">&#x27;promise1&#x27;</span>)</span><br><span class="line"> &#125;)</span><br><span class="line">&#125;, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">process.nextTick(<span class="function">() =&gt;</span> &#123;</span><br><span class="line"> <span class="built_in">console</span>.log(<span class="string">&#x27;nextTick&#x27;</span>)</span><br><span class="line"> process.nextTick(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">&#x27;nextTick&#x27;</span>)</span><br><span class="line">   process.nextTick(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">     <span class="built_in">console</span>.log(<span class="string">&#x27;nextTick&#x27;</span>)</span><br><span class="line">     process.nextTick(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">       <span class="built_in">console</span>.log(<span class="string">&#x27;nextTick&#x27;</span>)</span><br><span class="line">     &#125;)</span><br><span class="line">   &#125;)</span><br><span class="line"> &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>对于以上代码，大家可以发现无论如何，永远都是先把 nextTick 全部打印出来。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>在这里，我们了解了Event Loop相关的知识，也知道了浏览器的Event Loop和Node中的其实是不相同的。希望各位同学好好理解。</p>
+
+  </section>
+
+</article>
+
+<section class="read-more">
+           
+    
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">Older Post</span>
+                <h2 class="post-list__post-title post-title"><a href="/2021/01/06/跨域/" title="必须要知道的跨域">必须要知道的跨域</a></h2>
+                <p class="excerpt">
+                
+                前言在前端开发中，跨域这个问题就像一张狗屁膏药一样黏在我们身上。无论是在工作中还是面试中，跨域这个问题一定是无法避免的。那么，接下来就让我们来看看这个狗皮膏药内部的原理。
+为什么会出现跨域？相信大家对于这个问题都有一个统一的回答，同源策略。可是，我相信绝大多数人都不怎么了解为什么会有同源策略？我们都
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2021-01-05T16:00:00.000Z" class="post-list__meta--date date"
+  >2021-01-06</time
+>
+ &#8226; <span class="post-list__meta--tags tags">于 
+  <a class="-none-link" href="/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/" rel="tag">四川 成都</a>
+</span><a class="btn-border-small" href="/2021/01/06/跨域/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+  
+
+            
+        </div>
+    </div>
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    
+</body>
+</html>
