@@ -2,7 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://www.stallezhou.cn/2021/01/04/HTTP%E4%BB%A5%E5%8F%8ATLS/</loc>
+    <loc>http://www.stallezhou.cn/2021/01/15/%E6%89%8B%E5%86%99promise/</loc>
+    
+    <lastmod>2021-01-15</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.stallezhou.cn/2021/01/14/%E6%B7%B1%E6%8B%B7%E8%B4%9D%E4%B8%8E%E6%B5%85%E6%8B%B7%E8%B4%9D/</loc>
+    
+    <lastmod>2021-01-14</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.stallezhou.cn/2021/01/08/HTTP%E4%BB%A5%E5%8F%8ATLS/</loc>
     
     <lastmod>2021-01-08</lastmod>
     
@@ -130,7 +144,7 @@
 
   <url>
     <loc>http://www.stallezhou.cn/</loc>
-    <lastmod>2021-01-08</lastmod>
+    <lastmod>2021-01-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -138,7 +152,7 @@
   
   <url>
     <loc>http://www.stallezhou.cn/tags/%E5%9B%9B%E5%B7%9D-%E6%88%90%E9%83%BD/</loc>
-    <lastmod>2021-01-08</lastmod>
+    <lastmod>2021-01-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
